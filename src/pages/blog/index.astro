@@ -1,0 +1,57 @@
+---
+import { getCollection } from 'astro:content';
+import BaseHead from '../../components/BaseHead.astro';
+import Footer from '../../components/Footer.astro';
+import Header from '../../components/Header.astro';
+import PostCard from '../../components/PostCard.astro';
+import { SITE_TITLE } from '../../consts';
+
+const posts = (await getCollection('blog', ({ data }) => data.draft !== true)).sort(
+	(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
+);
+const description = 'Posts on building with AI — agents, retrieval, evals, prompting, and shipping to production.';
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<BaseHead title={`Blog — ${SITE_TITLE}`} description={description} />
+	</head>
+	<body>
+		<a href="#main" class="skip-link">Skip to content</a>
+		<Header />
+		<main id="main">
+			<section class="container page-head">
+				<p class="eyebrow">Writing</p>
+				<h1>Blog</h1>
+				<p class="muted">{posts.length} {posts.length === 1 ? 'post' : 'posts'} on building with AI.</p>
+			</section>
+			<section class="container">
+				<h2 class="sr-only">All posts</h2>
+				<div class="grid">
+					{posts.map((p) => <PostCard post={p} />)}
+				</div>
+			</section>
+		</main>
+		<Footer />
+	</body>
+</html>
+
+<style>
+	.page-head {
+		padding: 3.5rem 1.25rem 1.5rem;
+	}
+	.page-head h1 {
+		margin: 0.3rem 0 0.4rem;
+	}
+	.grid {
+		display: grid;
+		grid-template-columns: repeat(2, 1fr);
+		gap: 1.5rem;
+	}
+	@media (max-width: 720px) {
+		.grid {
+			grid-template-columns: 1fr;
+		}
+	}
+</style>

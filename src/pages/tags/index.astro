@@ -1,0 +1,67 @@
+---
+import { getCollection } from 'astro:content';
+import BaseHead from '../../components/BaseHead.astro';
+import Footer from '../../components/Footer.astro';
+import Header from '../../components/Header.astro';
+import { SITE_TITLE } from '../../consts';
+
+const posts = await getCollection('blog', ({ data }) => data.draft !== true);
+const counts = new Map<string, number>();
+for (const post of posts) {
+	for (const tag of post.data.tags) {
+		counts.set(tag, (counts.get(tag) ?? 0) + 1);
+	}
+}
+const tags = [...counts.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]));
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<BaseHead title={`Tags — ${SITE_TITLE}`} description="Browse posts by topic." />
+	</head>
+	<body>
+		<a href="#main" class="skip-link">Skip to content</a>
+		<Header />
+		<main id="main">
+			<section class="container container-narrow page-head">
+				<p class="eyebrow">Topics</p>
+				<h1>Tags</h1>
+				<p class="muted">Browse {posts.length} posts by topic.</p>
+				<div class="tags">
+					{
+						tags.map(([tag, count]) => (
+							<a class="tag big" href={`/tags/${tag}/`}>
+								#{tag} <span class="count">{count}</span>
+							</a>
+						))
+					}
+				</div>
+			</section>
+		</main>
+		<Footer />
+	</body>
+</html>
+
+<style>
+	.page-head {
+		padding: 3.5rem 1.25rem 1rem;
+	}
+	.page-head h1 {
+		margin: 0.3rem 0 0.4rem;
+	}
+	.tags {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.6rem;
+		margin-top: 1.5rem;
+	}
+	.tag.big {
+		font-size: 0.95rem;
+		padding: 0.45rem 0.9rem;
+	}
+	.count {
+		color: var(--accent);
+		margin-left: 0.15rem;
+	}
+</style>

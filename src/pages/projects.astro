@@ -1,0 +1,114 @@
+---
+import BaseHead from '../components/BaseHead.astro';
+import Footer from '../components/Footer.astro';
+import Header from '../components/Header.astro';
+import ProjectCard from '../components/ProjectCard.astro';
+import { SITE_TITLE } from '../consts';
+import { ACHIEVEMENTS, PROJECTS } from '../data/portfolio';
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<BaseHead
+			title={`Projects & Achievements — ${SITE_TITLE}`}
+			description="Selected AI/ML projects, research, and achievements by Bac Nguyen — code-switching ASR, deepfake detection, multi-agent systems, and more."
+		/>
+	</head>
+	<body>
+		<a href="#main" class="skip-link">Skip to content</a>
+		<Header />
+		<main id="main">
+			<section class="container page-head">
+				<p class="eyebrow">Portfolio</p>
+				<h1>Projects &amp; Achievements</h1>
+				<p class="muted lead">
+					Things I've built and the research I've worked on — from code-switching speech recognition
+					and deepfake detection to multi-agent LLM systems. Most have code on GitHub.
+				</p>
+			</section>
+
+			<section class="container">
+				<h2 class="section-label">Projects</h2>
+				<div class="grid">
+					{PROJECTS.map((p) => <ProjectCard project={p} />)}
+				</div>
+			</section>
+
+			<section class="container achievements">
+				<h2 class="section-label">Achievements &amp; activities</h2>
+				<ul class="ach-list">
+					{
+						ACHIEVEMENTS.map((a) => (
+							<li>
+								<div class="ach-main">
+									<span class="ach-title">{a.title}</span>
+									{a.detail && <span class="ach-detail muted"> — {a.detail}</span>}
+								</div>
+								<span class="ach-year">{a.year}</span>
+							</li>
+						))
+					}
+				</ul>
+			</section>
+		</main>
+		<Footer />
+	</body>
+</html>
+
+<style>
+	.page-head {
+		padding: 3.5rem 1.25rem 1.5rem;
+	}
+	.page-head h1 {
+		margin: 0.3rem 0 0.6rem;
+	}
+	.lead {
+		max-width: 44rem;
+		font-size: 1.05rem;
+	}
+	.section-label {
+		font-size: 0.85rem;
+		text-transform: uppercase;
+		letter-spacing: 0.08em;
+		color: var(--text-muted);
+		margin: 0 0 1.2rem;
+	}
+	.grid {
+		display: grid;
+		grid-template-columns: repeat(2, 1fr);
+		gap: 1.5rem;
+	}
+	.achievements {
+		margin-top: 3.5rem;
+	}
+	.ach-list {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		border-top: 1px solid var(--border);
+	}
+	.ach-list li {
+		display: flex;
+		justify-content: space-between;
+		align-items: baseline;
+		gap: 1rem;
+		padding: 0.9rem 0;
+		border-bottom: 1px solid var(--border);
+	}
+	.ach-title {
+		font-weight: 600;
+		color: var(--heading);
+	}
+	.ach-year {
+		flex-shrink: 0;
+		font-size: 0.85rem;
+		color: var(--text-muted);
+		font-variant-numeric: tabular-nums;
+	}
+	@media (max-width: 720px) {
+		.grid {
+			grid-template-columns: 1fr;
+		}
+	}
+</style>

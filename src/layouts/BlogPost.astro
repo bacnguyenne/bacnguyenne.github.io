@@ -1,0 +1,214 @@
+---
+import { Image } from 'astro:assets';
+import type { CollectionEntry } from 'astro:content';
+import BaseHead from '../components/BaseHead.astro';
+import Footer from '../components/Footer.astro';
+import FormattedDate from '../components/FormattedDate.astro';
+import Header from '../components/Header.astro';
+import { GITHUB_URL, SITE_TITLE } from '../consts';
+
+type Props = CollectionEntry<'blog'>['data'] & {
+	minutesRead: number;
+	prev?: CollectionEntry<'blog'>;
+	next?: CollectionEntry<'blog'>;
+};
+
+const { title, description, pubDate, updatedDate, heroImage, tags = [], minutesRead, prev, next } =
+	Astro.props;
+
+const path = Astro.url.pathname.endsWith('/') ? Astro.url.pathname : `${Astro.url.pathname}/`;
+const canonical = new URL(path, Astro.site).toString();
+const publishedTime = pubDate.toISOString();
+const modifiedTime = (updatedDate ?? pubDate).toISOString();
+
+const articleLd = {
+	'@context': 'https://schema.org',
+	'@type': 'BlogPosting',
+	headline: title,
+	description,
+	datePublished: publishedTime,
+	dateModified: modifiedTime,
+	author: { '@type': 'Person', name: SITE_TITLE, url: GITHUB_URL },
+	publisher: { '@type': 'Person', name: SITE_TITLE },
+	image: new URL(heroImage?.src ?? '/og.png', Astro.site).toString(),
+	mainEntityOfPage: canonical,
+	url: canonical,
+	keywords: tags.join(', '),
+};
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<BaseHead
+			title={`${title} — ${SITE_TITLE}`}
+			description={description}
+			image={heroImage}
+			type="article"
+			publishedTime={publishedTime}
+			modifiedTime={modifiedTime}
+			tags={tags}
+		/>
+		<script type="application/ld+json" set:html={JSON.stringify(articleLd)} />
+	</head>
+	<body>
+		<a href="#main" class="skip-link">Skip to content</a>
+		<Header />
+		<main id="main">
+			<article class="container container-narrow post">
+				<header class="post-head">
+					<a class="back" href="/blog/">← All posts</a>
+					{
+						tags.length > 0 && (
+							<div class="tag-row">
+								{tags.map((t) => (
+									<a class="tag" href={`/tags/${t}/`}>
+										{t}
+									</a>
+								))}
+							</div>
+						)
+					}
+					<h1>{title}</h1>
+					<p class="lede muted">{description}</p>
+					<div class="post-meta muted">
+						<FormattedDate date={pubDate} />
+						<span aria-hidden="true">·</span>
+						<span>{minutesRead} min read</span>
+						{
+							updatedDate && (
+								<span>
+									<span aria-hidden="true">·</span> Updated <FormattedDate date={updatedDate} />
+								</span>
+							)
+						}
+					</div>
+				</header>
+
+				{
+					heroImage && (
+						<div class="hero">
+							<Image src={heroImage} alt={title} width={1200} height={600} />
+						</div>
+					)
+				}
+
+				<div class="prose">
+					<slot />
+				</div>
+
+				{
+					(prev || next) && (
+						<nav class="post-nav" aria-label="More posts">
+							{prev ? (
+								<a class="pn" href={`/blog/${prev.id}/`}>
+									<span class="muted">← Older</span>
+									<span class="pn-title">{prev.data.title}</span>
+								</a>
+							) : (
+								<span />
+							)}
+							{next ? (
+								<a class="pn next" href={`/blog/${next.id}/`}>
+									<span class="muted">Newer →</span>
+									<span class="pn-title">{next.data.title}</span>
+								</a>
+							) : (
+								<span />
+							)}
+						</nav>
+					)
+				}
+			</article>
+		</main>
+		<Footer />
+	</body>
+</html>
+
+<style>
+	.post {
+		padding-top: 3rem;
+	}
+	.post-head {
+		margin-bottom: 2rem;
+	}
+	.back {
+		display: inline-block;
+		margin-bottom: 1.25rem;
+		font-size: 0.9rem;
+		color: var(--text-muted);
+	}
+	.back:hover {
+		color: var(--accent);
+		text-decoration: none;
+	}
+	.post-head .tag-row {
+		margin-bottom: 1rem;
+	}
+	.post-head h1 {
+		margin: 0 0 0.6rem;
+	}
+	.lede {
+		font-size: 1.15rem;
+		margin: 0 0 1rem;
+	}
+	.post-meta {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: 0.5rem;
+		font-size: 0.9rem;
+	}
+	.hero {
+		margin: 0 0 2.5rem;
+	}
+	.hero :global(img) {
+		width: 100%;
+		height: auto;
+		border-radius: var(--radius);
+		border: 1px solid var(--border);
+	}
+	.post-nav {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: 1rem;
+		margin-top: 3.5rem;
+		padding-top: 2rem;
+		border-top: 1px solid var(--border);
+	}
+	.pn {
+		display: flex;
+		flex-direction: column;
+		gap: 0.25rem;
+		padding: 1rem 1.2rem;
+		border: 1px solid var(--border);
+		border-radius: var(--radius-sm);
+		background: var(--surface);
+		transition:
+			border-color 0.18s ease,
+			transform 0.18s ease;
+	}
+	.pn:hover {
+		text-decoration: none;
+		transform: translateY(-2px);
+		border-color: color-mix(in srgb, var(--accent) 50%, var(--border));
+	}
+	.pn.next {
+		text-align: right;
+	}
+	.pn .muted {
+		font-size: 0.82rem;
+	}
+	.pn-title {
+		color: var(--heading);
+		font-weight: 600;
+	}
+	@media (max-width: 560px) {
+		.post-nav {
+			grid-template-columns: 1fr;
+		}
+		.pn.next {
+			text-align: left;
+		}
+	}
+</style>

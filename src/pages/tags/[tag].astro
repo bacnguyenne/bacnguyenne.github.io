@@ -1,0 +1,75 @@
+---
+import { getCollection } from 'astro:content';
+import BaseHead from '../../components/BaseHead.astro';
+import Footer from '../../components/Footer.astro';
+import Header from '../../components/Header.astro';
+import PostCard from '../../components/PostCard.astro';
+import { SITE_TITLE } from '../../consts';
+
+export async function getStaticPaths() {
+	const posts = (await getCollection('blog', ({ data }) => data.draft !== true)).sort(
+		(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
+	);
+	const tags = [...new Set(posts.flatMap((p) => p.data.tags))];
+	return tags.map((tag) => ({
+		params: { tag },
+		props: { tag, posts: posts.filter((p) => p.data.tags.includes(tag)) },
+	}));
+}
+
+const { tag, posts } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<BaseHead title={`#${tag} — ${SITE_TITLE}`} description={`Posts tagged ${tag}.`} />
+	</head>
+	<body>
+		<a href="#main" class="skip-link">Skip to content</a>
+		<Header />
+		<main id="main">
+			<section class="container page-head">
+				<a class="back" href="/tags/">← All tags</a>
+				<h1>#{tag}</h1>
+				<p class="muted">{posts.length} {posts.length === 1 ? 'post' : 'posts'}</p>
+			</section>
+			<section class="container">
+				<h2 class="sr-only">Posts tagged {tag}</h2>
+				<div class="grid">
+					{posts.map((p) => <PostCard post={p} />)}
+				</div>
+			</section>
+		</main>
+		<Footer />
+	</body>
+</html>
+
+<style>
+	.page-head {
+		padding: 3.5rem 1.25rem 1.5rem;
+	}
+	.back {
+		display: inline-block;
+		margin-bottom: 1rem;
+		font-size: 0.9rem;
+		color: var(--text-muted);
+	}
+	.back:hover {
+		color: var(--accent);
+		text-decoration: none;
+	}
+	.page-head h1 {
+		margin: 0 0 0.3rem;
+	}
+	.grid {
+		display: grid;
+		grid-template-columns: repeat(2, 1fr);
+		gap: 1.5rem;
+	}
+	@media (max-width: 720px) {
+		.grid {
+			grid-template-columns: 1fr;
+		}
+	}
+</style>

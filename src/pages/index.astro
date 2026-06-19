@@ -1,0 +1,140 @@
+---
+import { getCollection } from 'astro:content';
+import BaseHead from '../components/BaseHead.astro';
+import Footer from '../components/Footer.astro';
+import Header from '../components/Header.astro';
+import PostCard from '../components/PostCard.astro';
+import ProjectCard from '../components/ProjectCard.astro';
+import { GITHUB_URL, SITE_DESCRIPTION, SITE_TAGLINE, SITE_TITLE } from '../consts';
+import { PROJECTS } from '../data/portfolio';
+
+const posts = (await getCollection('blog', ({ data }) => data.draft !== true)).sort(
+	(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
+);
+const latest = posts.slice(0, 4);
+const featured = PROJECTS.filter((p) => p.featured).slice(0, 3);
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<BaseHead title={`${SITE_TITLE} — ${SITE_TAGLINE}`} description={SITE_DESCRIPTION} />
+	</head>
+	<body>
+		<a href="#main" class="skip-link">Skip to content</a>
+		<Header />
+		<main id="main">
+			<section class="hero container">
+				<p class="eyebrow">AI Engineer · Ho Chi Minh City</p>
+				<h1>I build with <span class="grad-text">AI</span>.</h1>
+				<p class="hero-sub">
+					I'm Bac — an AI Engineer working on software-defined vehicles. I build
+					computer-vision and edge-AI pipelines, virtual vehicle simulation, and multi-agent systems,
+					with a research background in speech, vision, and NLP. Here's my work, and what I've learned
+					shipping it.
+				</p>
+				<div class="hero-cta">
+					<a class="btn btn-primary" href="/projects/">View projects</a>
+					<a class="btn" href="/blog/">Read the blog</a>
+					<a class="btn" href={GITHUB_URL} target="_blank" rel="me noopener">
+						GitHub ↗<span class="sr-only"> (opens in a new tab)</span>
+					</a>
+				</div>
+			</section>
+
+			<section class="container block">
+				<div class="block-head">
+					<h2>Selected work</h2>
+					<a class="more" href="/projects/">All projects →</a>
+				</div>
+				<div class="grid">
+					{featured.map((p) => <ProjectCard project={p} />)}
+				</div>
+			</section>
+
+			{
+				latest.length > 0 && (
+					<section class="container block">
+						<div class="block-head">
+							<h2>Writing</h2>
+							<a class="more" href="/blog/">
+								All posts →
+							</a>
+						</div>
+						<div class="grid posts">
+							{latest.map((p) => (
+								<PostCard post={p} />
+							))}
+						</div>
+					</section>
+				)
+			}
+		</main>
+		<Footer />
+	</body>
+</html>
+
+<style>
+	.hero {
+		padding: clamp(3rem, 2rem + 6vw, 6rem) 1.25rem clamp(2rem, 1.5rem + 2vw, 3rem);
+		max-width: 52rem;
+	}
+	.hero h1 {
+		font-size: clamp(3rem, 1.8rem + 6vw, 5.5rem);
+		line-height: 1.02;
+		margin: 0.4rem 0 1rem;
+	}
+	.hero-sub {
+		font-size: clamp(1.1rem, 1rem + 0.6vw, 1.3rem);
+		color: var(--text-muted);
+		max-width: 42rem;
+		margin: 0 0 1.8rem;
+	}
+	.hero-cta {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.75rem;
+	}
+
+	.block {
+		margin-top: 3.5rem;
+	}
+	.block-head {
+		display: flex;
+		align-items: baseline;
+		justify-content: space-between;
+		margin-bottom: 1.5rem;
+	}
+	.block-head h2 {
+		margin: 0;
+	}
+	.more {
+		color: var(--text-muted);
+		font-size: 0.95rem;
+		font-weight: 600;
+		white-space: nowrap;
+	}
+	.more:hover {
+		color: var(--accent);
+		text-decoration: none;
+	}
+	.grid {
+		display: grid;
+		grid-template-columns: repeat(3, 1fr);
+		gap: 1.5rem;
+	}
+	.grid.posts {
+		grid-template-columns: repeat(2, 1fr);
+	}
+	@media (max-width: 900px) {
+		.grid {
+			grid-template-columns: repeat(2, 1fr);
+		}
+	}
+	@media (max-width: 640px) {
+		.grid,
+		.grid.posts {
+			grid-template-columns: 1fr;
+		}
+	}
+</style>

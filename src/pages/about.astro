@@ -1,0 +1,216 @@
+---
+import BaseHead from '../components/BaseHead.astro';
+import Footer from '../components/Footer.astro';
+import Header from '../components/Header.astro';
+import { EMAIL, EMAIL_URL, FACEBOOK_URL, GITHUB_URL, LINKEDIN_URL, SITE_TITLE } from '../consts';
+import { EDUCATION, EXPERIENCE, SKILLS } from '../data/portfolio';
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<BaseHead
+			title={`About — ${SITE_TITLE}`}
+			description="Bac Nguyen (Nguyễn Đình Nguyên Bắc) — AI Engineer and Data Science graduate. Experience, research, education, and skills."
+		/>
+	</head>
+	<body>
+		<a href="#main" class="skip-link">Skip to content</a>
+		<Header />
+		<main id="main">
+			<section class="container container-narrow about-hero">
+				<p class="eyebrow">About</p>
+				<h1>Nguyễn Đình Nguyên Bắc</h1>
+				<p class="role grad-text">AI Engineer · SDV &amp; AI</p>
+				<p class="bio-lead">
+					I build production AI for software-defined vehicles — computer-vision and edge-AI
+					pipelines, virtual ECU / vehicle simulation, and multi-agent systems. My background spans
+					applied research in speech, vision, and NLP — including international internships at A*STAR
+					(Singapore) and National Chung Cheng University (Taiwan) — and end-to-end engineering, from
+					model training to shipping a working product.
+				</p>
+				<div class="contact-row">
+					<a class="btn btn-primary" href={EMAIL_URL}>Email me</a>
+					<a class="btn" href={GITHUB_URL} target="_blank" rel="me noopener">GitHub</a>
+					<a class="btn" href={LINKEDIN_URL} target="_blank" rel="me noopener">LinkedIn</a>
+					<a class="btn" href={FACEBOOK_URL} target="_blank" rel="me noopener">Facebook</a>
+				</div>
+			</section>
+
+			<section class="container container-narrow about-body">
+				<div class="prose">
+					<p>
+						I graduated in Data Science from the Industrial University of Ho Chi Minh City, and I now
+						work as an AI Engineer at AutoNxt AI on software-defined vehicles — bringing
+						real-time computer vision and AI onto automotive hardware and into virtual vehicle
+						simulation. I care most about the engineering that turns a promising model into something
+						dependable: the pipeline, the evaluation, and the scaffolding that makes a model safe to
+						ship. I like problems that cross layers — training a model, wrapping it in an API, and
+						getting it running on the device.
+					</p>
+					<p>
+						On the research side I've worked on code-switching speech recognition, video deepfake
+						detection, and Transformer-based image captioning; on the product side, tool-using agents
+						and a full multi-agent e-commerce system. Lessons from that work end up on the
+						<a href="/blog/">blog</a>, and the projects themselves live on the
+						<a href="/projects/">projects page</a>.
+					</p>
+				</div>
+
+				<h2 class="sec">Experience</h2>
+				<div class="timeline">
+					{
+						EXPERIENCE.map((e) => (
+							<div class="tl-item">
+								<div class="tl-head">
+									<span class="tl-role">{e.role}</span>
+									<span class="tl-period">{e.period}</span>
+								</div>
+								<div class="tl-org">
+									{e.org} · {e.location}
+								</div>
+								<ul>
+									{e.points.map((p) => (
+										<li>{p}</li>
+									))}
+								</ul>
+							</div>
+						))
+					}
+				</div>
+
+				<h2 class="sec">Education</h2>
+				<div class="tl-item">
+					<div class="tl-head">
+						<span class="tl-role">{EDUCATION.school}</span>
+						<span class="tl-period">{EDUCATION.period}</span>
+					</div>
+					<div class="tl-org">{EDUCATION.degree}</div>
+					<p class="muted edu-detail">{EDUCATION.detail}</p>
+				</div>
+
+				<h2 class="sec">Skills</h2>
+				<div class="skills">
+					{
+						SKILLS.map((s) => (
+							<div class="skill-group">
+								<span class="skill-label">{s.group}</span>
+								<div class="tag-row">
+									{s.items.map((i) => (
+										<span class="tag">{i}</span>
+									))}
+								</div>
+							</div>
+						))
+					}
+				</div>
+
+				<h2 class="sec">Get in touch</h2>
+				<p class="muted">
+					Email me at <a href={EMAIL_URL}>{EMAIL}</a>, or find me on
+					<a href={GITHUB_URL} rel="me">GitHub</a>, <a href={LINKEDIN_URL} rel="me">LinkedIn</a>, and
+					<a href={FACEBOOK_URL} rel="me">Facebook</a>.
+				</p>
+			</section>
+		</main>
+		<Footer />
+	</body>
+</html>
+
+<style>
+	.about-hero {
+		padding: 3.5rem 1.25rem 1rem;
+	}
+	.about-hero h1 {
+		margin: 0.3rem 0 0.3rem;
+	}
+	.role {
+		font-size: 1.2rem;
+		font-weight: 700;
+		margin: 0 0 1.2rem;
+	}
+	.bio-lead {
+		font-size: 1.15rem;
+		color: var(--text-muted);
+		margin: 0 0 1.6rem;
+	}
+	.contact-row {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.6rem;
+	}
+	.about-body {
+		padding: 1.5rem 1.25rem 1rem;
+	}
+	.sec {
+		margin: 2.8rem 0 1.2rem;
+		padding-bottom: 0.5rem;
+		border-bottom: 1px solid var(--border);
+	}
+	.timeline {
+		display: flex;
+		flex-direction: column;
+		gap: 1.6rem;
+	}
+	.tl-item {
+		padding-left: 1rem;
+		border-left: 2px solid var(--border);
+	}
+	.tl-head {
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: space-between;
+		gap: 0.3rem 1rem;
+		align-items: baseline;
+	}
+	.tl-role {
+		font-weight: 700;
+		color: var(--heading);
+		font-size: 1.05rem;
+	}
+	.tl-period {
+		font-size: 0.85rem;
+		color: var(--text-muted);
+		font-variant-numeric: tabular-nums;
+	}
+	.tl-org {
+		color: var(--accent);
+		font-weight: 600;
+		font-size: 0.92rem;
+		margin-top: 0.1rem;
+	}
+	.tl-item ul {
+		margin: 0.6rem 0 0;
+		padding-left: 1.1rem;
+		color: var(--text-muted);
+	}
+	.tl-item li + li {
+		margin-top: 0.3rem;
+	}
+	.edu-detail {
+		margin: 0.5rem 0 0;
+	}
+	.skills {
+		display: flex;
+		flex-direction: column;
+		gap: 1.1rem;
+	}
+	.skill-group {
+		display: grid;
+		grid-template-columns: 9rem 1fr;
+		gap: 0.5rem 1rem;
+		align-items: start;
+	}
+	.skill-label {
+		font-weight: 700;
+		color: var(--heading);
+		font-size: 0.92rem;
+		padding-top: 0.2rem;
+	}
+	@media (max-width: 560px) {
+		.skill-group {
+			grid-template-columns: 1fr;
+			gap: 0.4rem;
+		}
+	}
+</style>

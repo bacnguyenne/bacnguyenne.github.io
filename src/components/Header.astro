@@ -1,0 +1,122 @@
+---
+import HeaderLink from './HeaderLink.astro';
+import ThemeToggle from './ThemeToggle.astro';
+import { FACEBOOK_URL, GITHUB_URL, LINKEDIN_URL, NAV_LINKS, SITE_TITLE } from '../consts';
+---
+
+<header class="site-header">
+	<div class="container bar">
+		<a class="brand" href="/" aria-label={`${SITE_TITLE} — home`}>
+			<span class="brand-dot" aria-hidden="true"></span>
+			<span class="brand-name">{SITE_TITLE}</span>
+		</a>
+
+		<nav class="nav" aria-label="Primary">
+			{NAV_LINKS.map((l) => <HeaderLink href={l.href}>{l.label}</HeaderLink>)}
+		</nav>
+
+		<div class="actions">
+			<a class="icon-link" href={GITHUB_URL} target="_blank" rel="me noopener" aria-label="GitHub">
+				<svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"
+					><path
+						d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.6 7.6 0 0 1 2-.27c.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8z"
+					></path></svg
+				>
+			</a>
+			<a class="icon-link" href={LINKEDIN_URL} target="_blank" rel="me noopener" aria-label="LinkedIn">
+				<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"
+					><path
+						d="M20.45 20.45h-3.56v-5.57c0-1.33-.03-3.04-1.85-3.04-1.86 0-2.14 1.45-2.14 2.94v5.67H9.35V9h3.41v1.56h.05c.48-.9 1.63-1.85 3.36-1.85 3.59 0 4.26 2.36 4.26 5.44v6.3zM5.34 7.43a2.07 2.07 0 1 1 0-4.14 2.07 2.07 0 0 1 0 4.14zm1.78 13.02H3.56V9h3.56v11.45zM22.22 0H1.77C.8 0 0 .78 0 1.74v20.52C0 23.22.8 24 1.77 24h20.45c.98 0 1.78-.78 1.78-1.74V1.74C24 .78 23.2 0 22.22 0z"
+					></path></svg
+				>
+			</a>
+			<a class="icon-link" href={FACEBOOK_URL} target="_blank" rel="me noopener" aria-label="Facebook">
+				<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"
+					><path
+						d="M24 12.07C24 5.4 18.63 0 12 0S0 5.4 0 12.07C0 18.1 4.39 23.1 10.13 24v-8.44H7.08v-3.49h3.05V9.41c0-3.02 1.79-4.69 4.53-4.69 1.31 0 2.69.24 2.69.24v2.97h-1.52c-1.49 0-1.96.93-1.96 1.89v2.25h3.33l-.53 3.49h-2.8V24C19.61 23.1 24 18.1 24 12.07z"
+					></path></svg
+				>
+			</a>
+			<ThemeToggle />
+		</div>
+	</div>
+</header>
+
+<style>
+	.site-header {
+		position: sticky;
+		top: 0;
+		z-index: 50;
+		background: color-mix(in srgb, var(--bg) 78%, transparent);
+		backdrop-filter: saturate(160%) blur(12px);
+		-webkit-backdrop-filter: saturate(160%) blur(12px);
+		border-bottom: 1px solid var(--border);
+	}
+	.bar {
+		display: flex;
+		align-items: center;
+		gap: 1rem;
+		height: 64px;
+	}
+	.brand {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.55rem;
+		font-weight: 800;
+		letter-spacing: -0.02em;
+		color: var(--heading);
+		font-size: 1.05rem;
+	}
+	.brand:hover {
+		text-decoration: none;
+	}
+	.brand-dot {
+		width: 14px;
+		height: 14px;
+		border-radius: 5px;
+		background: var(--grad);
+		box-shadow: 0 0 18px color-mix(in srgb, var(--accent) 60%, transparent);
+	}
+	.nav {
+		display: flex;
+		gap: 1.25rem;
+		margin-left: auto;
+	}
+	.actions {
+		display: flex;
+		align-items: center;
+		gap: 0.35rem;
+		margin-left: 0.5rem;
+	}
+	.icon-link {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: 36px;
+		height: 36px;
+		border-radius: 999px;
+		color: var(--text-muted);
+		transition:
+			color 0.15s ease,
+			background 0.15s ease;
+	}
+	.icon-link:hover {
+		color: var(--heading);
+		background: var(--surface-2);
+	}
+
+	@media (max-width: 640px) {
+		.brand-name {
+			display: none;
+		}
+		.nav {
+			gap: 0.85rem;
+		}
+		.icon-link {
+			display: none;
+		}
+		.icon-link:first-of-type {
+			display: inline-flex;
+		}
+	}
+</style>

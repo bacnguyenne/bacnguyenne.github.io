@@ -1,0 +1,51 @@
+---
+import BaseHead from '../components/BaseHead.astro';
+import Footer from '../components/Footer.astro';
+import Header from '../components/Header.astro';
+import { SITE_TITLE } from '../consts';
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<BaseHead title={`404 — ${SITE_TITLE}`} description="Page not found." noindex />
+	</head>
+	<body>
+		<a href="#main" class="skip-link">Skip to content</a>
+		<Header />
+		<main id="main" class="container nf">
+			<p class="code grad-text">404</p>
+			<h1>Lost in the latent space.</h1>
+			<p class="muted">That page doesn't exist (or wandered off). Let's get you back.</p>
+			<div class="cta">
+				<a class="btn btn-primary" href="/">Home</a>
+				<a class="btn" href="/blog/">Read the blog</a>
+			</div>
+		</main>
+		<Footer />
+	</body>
+</html>
+
+<style>
+	.nf {
+		text-align: center;
+		padding: clamp(4rem, 3rem + 6vw, 8rem) 1.25rem;
+		max-width: 40rem;
+	}
+	.code {
+		font-size: clamp(4rem, 3rem + 8vw, 8rem);
+		font-weight: 800;
+		line-height: 1;
+		margin: 0 0 0.5rem;
+		letter-spacing: -0.03em;
+	}
+	.nf h1 {
+		margin: 0 0 0.6rem;
+	}
+	.cta {
+		display: flex;
+		gap: 0.75rem;
+		justify-content: center;
+		margin-top: 1.8rem;
+	}
+</style>
