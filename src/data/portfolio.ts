@@ -16,6 +16,18 @@ export interface Project {
 
 export const PROJECTS: Project[] = [
 	{
+		title: 'agentlint',
+		blurb:
+			'A static-analysis linter & security scanner for AI coding-agent configuration (Claude Code & MCP) — 58 rules, safe --fix, JSON output, an MCP server, and a 198-item catalog of vetted Skills, MCP servers, and Tools you can install with one command. The validator runs entirely in your browser.',
+		tech: ['TypeScript', 'Next.js', 'Node.js', 'MCP', 'Vitest'],
+		result: 'Published on npm (agentlint-cli + agentlint-core) · live in-browser validator',
+		year: '2026',
+		repo: 'https://github.com/bacnguyenne/agentlint',
+		demo: '/agentlint/',
+		tags: ['developer-tools', 'security', 'open-source'],
+		featured: true,
+	},
+	{
 		title: 'KX-Solution',
 		blurb:
 			'A domain-agnostic agentic AI platform — multi-agent orchestration that adapts across domains. Built at AutoNxt AI for Kaizenics, with a software-defined-vehicle application running virtual cars on RemotiveLabs ECUs with Android Automotive and CARLA.',
@@ -119,7 +131,7 @@ export const EXPERIENCE: Experience[] = [
 		role: 'AI Engineer',
 		org: 'AutoNxt AI',
 		location: 'Ho Chi Minh City, Vietnam',
-		period: 'Nov 2025 – Jun 2026',
+		period: 'Nov 2025 – Present',
 		points: [
 			'Work on software-defined vehicles (SDV): production computer-vision / AI pipelines, edge AI on automotive hardware, and virtual ECU / vehicle simulation.',
 			'Project Kaizenics — built KX-Solution, a domain-agnostic agentic AI platform (multi-agent orchestration), with an SDV application: virtual cars on RemotiveLabs ECUs with Android Automotive and CARLA.',

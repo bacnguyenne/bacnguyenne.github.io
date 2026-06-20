@@ -16,4 +16,6 @@ export const NAV_LINKS = [
 	{ href: '/projects/', label: 'Projects' },
 	{ href: '/blog/', label: 'Blog' },
 	{ href: '/about/', label: 'About' },
+	// Live tool hosted under this domain (Next static app at /agentlint/).
+	{ href: '/agentlint/', label: 'agentlint' },
 ];
