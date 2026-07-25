@@ -13,6 +13,7 @@ const posts = (await getCollection('blog', ({ data }) => data.draft !== true)).s
 // ponytail: topic derived from tags — one map here beats a frontmatter field in every file
 function topicOf(tags: string[]): string {
 	if (tags.includes('sdv')) return 'sdv';
+	if (tags.includes('coding-agents')) return 'agents';
 	if (tags.includes('engineering-practice')) return 'practice';
 	if (tags.includes('soft-skills')) return 'working';
 	if (tags.includes('research') || tags.includes('computer-vision') || tags.includes('asr'))
@@ -27,9 +28,15 @@ const TOPICS = [
 		blurb: 'Virtual ECUs, simulation, vehicle APIs, and the shift to software-first cars.',
 	},
 	{
+		key: 'agents',
+		label: 'Coding Agents',
+		blurb:
+			'Agent harnesses, context engineering, MCP, and running LLM coding tools without regret.',
+	},
+	{
 		key: 'ai',
 		label: 'AI & LLM Engineering',
-		blurb: 'Agents, retrieval, structured outputs, serving and fine-tuning open models.',
+		blurb: 'Retrieval, structured outputs, serving and fine-tuning open models.',
 	},
 	{
 		key: 'practice',
