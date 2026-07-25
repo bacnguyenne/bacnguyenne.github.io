@@ -5,7 +5,7 @@ pubDate: "Jun 18 2026"
 tags: [asr, nlp, research]
 ---
 
-Code-switching — speakers mixing two languages inside one sentence — quietly breaks most speech recognizers. A model trained on clean monolingual audio hears "boleh tolong check ini" and confidently transcribes it as one language or the other, mangling the half it wasn't expecting. During my research internship at A\*STAR I²R I worked on Malay–English code-switching ASR, and got word error rate down from a 34% baseline to 28%. Here is where that improvement actually came from, and what I'd tell myself starting over.
+Code-switching — speakers mixing two languages inside one sentence — quietly breaks most speech recognizers. A model trained on clean monolingual audio hears "boleh tolong check ini" and confidently transcribes it as one language or the other, mangling the half it wasn't expecting. I spent a research internship working on Malay–English code-switching ASR, and got word error rate down from a 34% baseline to 28%. Here is where that improvement actually came from, and what I'd tell myself starting over.
 
 ## Why code-switching is its own problem
 

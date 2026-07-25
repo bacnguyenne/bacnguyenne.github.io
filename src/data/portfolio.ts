@@ -53,7 +53,6 @@ export const PROJECTS: Project[] = [
 			'A hybrid Whisper-encoder + LLaMA-decoder ASR system for Malay–English code-switching, trained with Noisy Student Training and teacher–student pseudo-labeling for low-resource robustness.',
 		tech: ['PyTorch', 'Whisper', 'LLaMA', 'Hugging Face'],
 		result: 'Reduced WER from 34% → 28% on the CS-ASR benchmark',
-		context: 'Research @ A*STAR I²R, Singapore',
 		year: '2025',
 		repo: 'https://github.com/bacnguyenne/Code-Switching-Automatic-Speech-Recognition',
 		tags: ['ASR', 'NLP', 'research'],
@@ -146,16 +145,6 @@ export const EXPERIENCE: Experience[] = [
 		points: [
 			'Built a smart HR assistant (recruitment, payroll, employee services) using LangChain + the OpenAI API.',
 			'Implemented tool-using agents with memory, retrieval, and a vector database over internal systems.',
-		],
-	},
-	{
-		role: 'Researcher Intern (Remote)',
-		org: 'A*STAR Institute for Infocomm Research (I²R)',
-		location: 'Singapore',
-		period: 'Feb 2025 – Jul 2025',
-		points: [
-			'Researched code-switching ASR for Southeast Asian languages.',
-			'Built a hybrid Whisper-encoder + LLaMA-decoder model with Noisy Student Training; reduced WER 34% → 28%.',
 		],
 	},
 	{
