@@ -259,6 +259,25 @@ html.dark .theme-toggle .icon-moon {
 	line-height: 1.8;
 	color: var(--text);
 }
+.prose p {
+	text-align: justify;
+	hyphens: auto;
+	-webkit-hyphens: auto;
+}
+.prose figure {
+	margin: 1.8rem 0;
+}
+.prose figure svg {
+	width: 100%;
+	height: auto;
+	display: block;
+}
+.prose figcaption {
+	text-align: center;
+	font-size: 0.85rem;
+	color: var(--text-muted);
+	margin-top: 0.5rem;
+}
 .prose > * + * {
 	margin-top: 1.2rem;
 }

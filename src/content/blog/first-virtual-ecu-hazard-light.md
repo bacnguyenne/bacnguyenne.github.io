@@ -7,9 +7,33 @@ tags: [sdv, automotive, tutorial]
 
 ## What we're building
 
-I've written about [why our virtual car is a Docker Compose stack](/blog/virtual-ecus-with-remotivelabs/). This post is the missing hands-on companion — the exact material I used to train our team, condensed from a workshop deck into a walkthrough you can type along with.
+I've written about [why a virtual car is just a Docker Compose stack](/blog/virtual-ecus-with-remotivelabs/). This post is the hands-on companion: a walkthrough you can type along with, from an empty folder to a passing test — no hardware, no prior automotive background needed.
 
-The example: press the hazard-light button → the Body Control Module (BCM) sets **both** turn-light requests → a test asserts the front-light module actually receives them. Small enough to fit in a post, real enough to touch every layer: two CAN buses, a signal database each, one behavioral model, and a containerized pytest. It's based on RemotiveLabs' public [getting-started example](https://github.com/remotivelabs/remotivelabs-topology-examples).
+The example: press the hazard-light button → the Body Control Module (BCM) sets **both** turn-light requests → a test asserts the front-light module actually receives them. Small enough to fit in a post, real enough to touch every layer: two CAN buses, a signal database each, one behavioral model, and a containerized pytest. It's based on RemotiveLabs' public [getting-started example](https://github.com/remotivelabs/remotivelabs-topology-examples), so every file here is reproducible.
+
+<figure>
+<svg viewBox="0 0 720 150" role="img" aria-label="Signal flow: hazard button on SCCM crosses DriverCan to BCM, which sets both turn-light requests on BodyCan, received by FLCM" style="font-family: var(--font-sans, sans-serif); font-size: 13px;">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--border-strong)"/>
+    </marker>
+  </defs>
+  <rect x="20" y="50" width="130" height="52" rx="8" fill="var(--surface-2)" stroke="var(--border-strong)"/>
+  <text x="85" y="72" text-anchor="middle" fill="var(--heading)" font-weight="600">SCCM</text>
+  <text x="85" y="90" text-anchor="middle" fill="var(--text-muted)" font-size="10">hazard button</text>
+  <line x1="150" y1="76" x2="290" y2="76" stroke="var(--border-strong)" stroke-width="2" marker-end="url(#arr)"/>
+  <text x="220" y="66" text-anchor="middle" fill="var(--text-muted)" font-size="11">DriverCan · frame 100</text>
+  <rect x="295" y="50" width="130" height="52" rx="8" fill="var(--accent)" fill-opacity="0.12" stroke="var(--accent)"/>
+  <text x="360" y="72" text-anchor="middle" fill="var(--heading)" font-weight="700">BCM</text>
+  <text x="360" y="90" text-anchor="middle" fill="var(--text-muted)" font-size="10">mirror to both lights</text>
+  <line x1="425" y1="76" x2="565" y2="76" stroke="var(--border-strong)" stroke-width="2" marker-end="url(#arr)"/>
+  <text x="495" y="66" text-anchor="middle" fill="var(--text-muted)" font-size="11">BodyCan · frame 103</text>
+  <rect x="570" y="50" width="130" height="52" rx="8" fill="var(--surface-2)" stroke="var(--border-strong)"/>
+  <text x="635" y="72" text-anchor="middle" fill="var(--heading)" font-weight="600">FLCM</text>
+  <text x="635" y="90" text-anchor="middle" fill="var(--text-muted)" font-size="10">pytest asserts here</text>
+</svg>
+<figcaption>The whole exercise in one line: button frame in, two turn-light signals out, a test watching the far end.</figcaption>
+</figure>
 
 ## Setup (10 minutes, once)
 

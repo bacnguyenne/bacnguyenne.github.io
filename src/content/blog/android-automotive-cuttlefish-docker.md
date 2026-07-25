@@ -7,11 +7,11 @@ tags: [sdv, android-automotive, debugging]
 
 ## Why put Android in the virtual car
 
-The [previous post](/blog/virtual-ecus-with-remotivelabs/) covered our virtual car: ECUs as containers, real signal databases, virtual CAN/LIN/Ethernet buses. That stack tests ECU-to-ECU logic well, but the infotainment unit (IHU) was a stub — and the interesting HMI questions ("does the warning actually appear on the driver's screen?") need the real thing.
+The [previous post](/blog/virtual-ecus-with-remotivelabs/) covered building a virtual car: ECUs as containers, real signal databases, virtual CAN/LIN/Ethernet buses. That stack tests ECU-to-ECU logic well, but the infotainment unit (IHU) is a stub — and the interesting HMI questions ("does the warning actually appear on the driver's screen?") need the real thing.
 
-The real thing is [Android Automotive OS](https://source.android.com/docs/automotive) (AAOS), and Google ships a way to run it without hardware: [Cuttlefish](https://source.android.com/docs/devices/cuttlefish), a virtual device that boots real Android images on crosvm. Our goal: Cuttlefish as one more container in the compose stack, wired to the vehicle buses, streamed to the browser over WebRTC. Instrument cluster shows the speed from the chassis bus; safety warnings from the central ECU pop up on the screen.
+The real thing is [Android Automotive OS](https://source.android.com/docs/automotive) (AAOS), and Google ships a way to run it without hardware: [Cuttlefish](https://source.android.com/docs/devices/cuttlefish), a virtual device that boots real Android images on crosvm. The goal: Cuttlefish as one more container in the compose stack, wired to the vehicle buses, streamed to the browser over WebRTC. The instrument cluster shows the speed from the chassis bus; warnings from the central ECU pop up on the screen.
 
-It works. Cold boot ~3 minutes, warm boot ~30–40 seconds, viewable from any browser on the LAN. Getting there involved two genuinely deep bugs, which are the actual content of this post.
+It works — cold boot ~3 minutes, warm boot ~30–40 seconds, viewable from any browser on the LAN. Getting there involves two genuinely deep bugs that anyone reproducing this setup on Windows/WSL2 will hit, and they're the actual content of this post.
 
 ## The setup in one block
 
@@ -55,6 +55,42 @@ The general lesson: when a syscall is unavailable in your environment, `LD_PRELO
 Second symptom, subtler: the stack boots, the browser loads the streamer page, the device list shows up... and the video connection dies after ~21 seconds with "No connection to the guest device."
 
 WebRTC diagnosis 101: look at the ICE candidates. The streamer enumerates the network interfaces *it can see* and advertises each as a host candidate. Inside Docker Desktop's bridged network, the only interface it sees is its container IP — `172.18.x.x`, an address inside Docker Desktop's hidden utility VM that no Windows browser can route to. Every candidate is unreachable; ICE times out; no video.
+
+<figure>
+<svg viewBox="0 0 720 240" role="img" aria-label="Broken path: browser cannot reach the container IP advertised from inside Docker Desktop's VM. Working path: with native Docker and host networking, the streamer advertises the WSL2 eth0 IP the browser can reach" style="font-family: var(--font-sans, sans-serif); font-size: 12px;">
+  <defs>
+    <marker id="arrx" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--border-strong)"/>
+    </marker>
+  </defs>
+  <!-- broken row -->
+  <text x="20" y="30" fill="var(--text-muted)" font-size="11" font-weight="600">✗ DOCKER DESKTOP (bridged)</text>
+  <rect x="20" y="42" width="120" height="44" rx="8" fill="var(--surface-2)" stroke="var(--border-strong)"/>
+  <text x="80" y="68" text-anchor="middle" fill="var(--heading)" font-weight="600">Browser</text>
+  <line x1="140" y1="64" x2="255" y2="64" stroke="var(--border-strong)" stroke-width="2" stroke-dasharray="5 4" marker-end="url(#arrx)"/>
+  <text x="198" y="54" text-anchor="middle" fill="var(--text-muted)" font-size="10">unreachable</text>
+  <rect x="260" y="42" width="180" height="44" rx="8" fill="var(--surface-2)" stroke="var(--border-strong)" stroke-dasharray="5 4"/>
+  <text x="350" y="60" text-anchor="middle" fill="var(--text-muted)" font-size="11">hidden utility VM</text>
+  <text x="350" y="76" text-anchor="middle" fill="var(--text-muted)" font-size="10">advertises 172.18.x.x</text>
+  <rect x="460" y="42" width="150" height="44" rx="8" fill="var(--surface-2)" stroke="var(--border-strong)"/>
+  <text x="535" y="60" text-anchor="middle" fill="var(--heading)" font-weight="600">Streamer</text>
+  <text x="535" y="76" text-anchor="middle" fill="var(--text-muted)" font-size="10">ICE times out ~21 s</text>
+  <!-- working row -->
+  <text x="20" y="140" fill="var(--text-muted)" font-size="11" font-weight="600">✓ NATIVE DOCKER + network_mode: host</text>
+  <rect x="20" y="152" width="120" height="44" rx="8" fill="var(--surface-2)" stroke="var(--border-strong)"/>
+  <text x="80" y="178" text-anchor="middle" fill="var(--heading)" font-weight="600">Browser</text>
+  <line x1="140" y1="174" x2="255" y2="174" stroke="var(--accent)" stroke-width="2.5" marker-end="url(#arrx)"/>
+  <text x="198" y="164" text-anchor="middle" fill="var(--text-muted)" font-size="10">WSL vEthernet</text>
+  <rect x="260" y="152" width="180" height="44" rx="8" fill="var(--accent)" fill-opacity="0.12" stroke="var(--accent)"/>
+  <text x="350" y="170" text-anchor="middle" fill="var(--heading)" font-weight="600">WSL2 eth0</text>
+  <text x="350" y="186" text-anchor="middle" fill="var(--text-muted)" font-size="10">172.28.x.x — reachable</text>
+  <line x1="440" y1="174" x2="455" y2="174" stroke="var(--accent)" stroke-width="2.5"/>
+  <rect x="460" y="152" width="150" height="44" rx="8" fill="var(--surface-2)" stroke="var(--border-strong)"/>
+  <text x="535" y="170" text-anchor="middle" fill="var(--heading)" font-weight="600">Streamer</text>
+  <text x="535" y="186" text-anchor="middle" fill="var(--text-muted)" font-size="10">binds the host's IPs</text>
+</svg>
+<figcaption>Same streamer, two network stacks. WebRTC only works when the advertised address is one the browser can actually route to.</figcaption>
+</figure>
 
 Two changes fix it properly:
 

@@ -6,7 +6,7 @@ tags: [sdv, automotive, reference]
 heroImage: '../../assets/remotivelabs-cheatsheet.png'
 ---
 
-While onboarding our team onto the virtual-car stack, I kept answering the same questions: *which CLI group does X live under? why is playback 1000× too fast? why won't the broker start?* So I condensed everything into a one-page field cheatsheet — every command and gotcha on it verified against a live install (CLI 0.21.0, topology-lib 0.20.0) rather than copied from docs.
+If you work with the RemotiveLabs toolchain — or are about to, after reading the [virtual-car posts](/blog/virtual-ecus-with-remotivelabs/) — the same questions come up on repeat: *which CLI group does X live under? why is playback 1000× too fast? why won't the broker start?* This one-page field cheatsheet answers them at a glance. Every command and gotcha on it was verified against a live install (CLI 0.21.0, topology-lib 0.20.0) rather than copied from docs.
 
 **[Download the PDF](/files/remotivelabs-cheatsheet.pdf)** — print it, pin it next to your desk. The full-resolution poster is above; below are the parts I use most, in searchable text form.
 
@@ -26,6 +26,28 @@ CLI groups mirror this: `remotive topology` (build/validate/inspect), `remotive 
 ## Record & replay is 3 steps, not 2
 
 The single most common mistake. Record output is a *raw recording*; playback input is a *recording-session* that binds the raw capture to a signal database. Skip the middle step and playback can't decode anything.
+
+<figure>
+<svg viewBox="0 0 720 120" role="img" aria-label="Record and replay pipeline: record produces a raw recording, recording-session create binds it to a signal database, playback replays the session" style="font-family: var(--font-sans, sans-serif); font-size: 13px;">
+  <defs>
+    <marker id="arr2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--border-strong)"/>
+    </marker>
+  </defs>
+  <rect x="15" y="35" width="150" height="52" rx="8" fill="var(--surface-2)" stroke="var(--border-strong)"/>
+  <text x="90" y="57" text-anchor="middle" fill="var(--heading)" font-weight="600">1 · record</text>
+  <text x="90" y="75" text-anchor="middle" fill="var(--text-muted)" font-size="10">raw recording</text>
+  <line x1="165" y1="61" x2="265" y2="61" stroke="var(--border-strong)" stroke-width="2" marker-end="url(#arr2)"/>
+  <rect x="270" y="35" width="180" height="52" rx="8" fill="var(--accent)" fill-opacity="0.12" stroke="var(--accent)"/>
+  <text x="360" y="57" text-anchor="middle" fill="var(--heading)" font-weight="700">2 · session create</text>
+  <text x="360" y="75" text-anchor="middle" fill="var(--text-muted)" font-size="10">binds signal DB — REQUIRED</text>
+  <line x1="450" y1="61" x2="550" y2="61" stroke="var(--border-strong)" stroke-width="2" marker-end="url(#arr2)"/>
+  <rect x="555" y="35" width="150" height="52" rx="8" fill="var(--surface-2)" stroke="var(--border-strong)"/>
+  <text x="630" y="57" text-anchor="middle" fill="var(--heading)" font-weight="600">3 · playback</text>
+  <text x="630" y="75" text-anchor="middle" fill="var(--text-muted)" font-size="10">open · play · seek</text>
+</svg>
+<figcaption>The pipeline everyone tries to shortcut. Step 2 is what makes a raw capture decodable.</figcaption>
+</figure>
 
 ```bash
 # 1 — record raw traffic

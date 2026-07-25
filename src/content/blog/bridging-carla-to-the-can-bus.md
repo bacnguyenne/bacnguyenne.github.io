@@ -7,20 +7,43 @@ tags: [sdv, carla, simulation]
 
 ## The missing piece: physics
 
-Our [virtual car](/blog/virtual-ecus-with-remotivelabs/) has containerized ECUs talking over real signal databases, and a [real Android Automotive screen](/blog/android-automotive-cuttlefish-docker/). What it doesn't have is a *world*: an adaptive cruise control ECU is meaningless without a road, a lead vehicle, and physics that push back.
+A [virtual car](/blog/virtual-ecus-with-remotivelabs/) gives you containerized ECUs talking over real signal databases, and even a [real Android Automotive screen](/blog/android-automotive-cuttlefish-docker/). What it doesn't have is a *world*: an adaptive-cruise-control ECU is meaningless without a road, a lead vehicle, and physics that push back.
 
-[CARLA](https://carla.org) provides that world — an Unreal-based driving simulator with vehicle dynamics, traffic, pedestrians, and sensors. The job: connect CARLA to the vehicle buses so that an ECU publishing `AccelDemand` on CAN actually accelerates a simulated car, and the car's speed comes back as a CAN frame the rest of the stack can consume.
+[CARLA](https://carla.org) provides that world — an open-source, Unreal-based driving simulator with vehicle dynamics, traffic, pedestrians, and sensors. The job: connect CARLA to the vehicle buses so that an ECU publishing `AccelDemand` on CAN actually accelerates a simulated car, and the car's speed comes back as a CAN frame the rest of the stack can consume.
 
-This post is about the bridge we built for that, and — maybe more useful — how we verified it wasn't lying to us.
+This post covers a bridge design that solves this cleanly — three decisions you can reuse for any simulator-to-bus integration — and, maybe more useful, how to verify such a bridge isn't lying to you.
 
 ## Design: a dumb pipe with a smart hook
 
 The bridge's contract is deliberately tiny: flat key-value signals in, flat key-value signals out.
 
-```text
-ECU  ──▶  {"ego.throttle": 0.6}   ──▶  bridge  ──▶  CARLA
-     ◀──  {"ego.speed_kmh": 42}   ◀──          ◀──
-```
+<figure>
+<svg viewBox="0 0 720 170" role="img" aria-label="Bridge tick loop: ECU sends commands like ego.throttle to the bridge, which applies them to CARLA; observations like ego.speed_kmh flow back through the bridge to the ECU" style="font-family: var(--font-sans, sans-serif); font-size: 13px;">
+  <defs>
+    <marker id="arr3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--border-strong)"/>
+    </marker>
+  </defs>
+  <rect x="20" y="55" width="130" height="60" rx="8" fill="var(--surface-2)" stroke="var(--border-strong)"/>
+  <text x="85" y="81" text-anchor="middle" fill="var(--heading)" font-weight="600">ECU / bus</text>
+  <text x="85" y="99" text-anchor="middle" fill="var(--text-muted)" font-size="10">CAN signals</text>
+  <line x1="150" y1="72" x2="285" y2="72" stroke="var(--accent)" stroke-width="2.5" marker-end="url(#arr3)"/>
+  <text x="218" y="60" text-anchor="middle" fill="var(--text-muted)" font-size="11">{"ego.throttle": 0.6}</text>
+  <line x1="285" y1="100" x2="150" y2="100" stroke="var(--border-strong)" stroke-width="2.5" marker-end="url(#arr3)"/>
+  <text x="218" y="122" text-anchor="middle" fill="var(--text-muted)" font-size="11">{"ego.speed_kmh": 42}</text>
+  <rect x="290" y="45" width="150" height="80" rx="8" fill="var(--accent)" fill-opacity="0.12" stroke="var(--accent)"/>
+  <text x="365" y="76" text-anchor="middle" fill="var(--heading)" font-weight="700">bridge</text>
+  <text x="365" y="96" text-anchor="middle" fill="var(--text-muted)" font-size="10">pure I/O · 50 Hz</text>
+  <line x1="440" y1="72" x2="565" y2="72" stroke="var(--accent)" stroke-width="2.5" marker-end="url(#arr3)"/>
+  <text x="502" y="60" text-anchor="middle" fill="var(--text-muted)" font-size="11">apply commands</text>
+  <line x1="565" y1="100" x2="440" y2="100" stroke="var(--border-strong)" stroke-width="2.5" marker-end="url(#arr3)"/>
+  <text x="502" y="122" text-anchor="middle" fill="var(--text-muted)" font-size="11">read observations</text>
+  <rect x="570" y="55" width="130" height="60" rx="8" fill="var(--surface-2)" stroke="var(--border-strong)"/>
+  <text x="635" y="81" text-anchor="middle" fill="var(--heading)" font-weight="600">CARLA</text>
+  <text x="635" y="99" text-anchor="middle" fill="var(--text-muted)" font-size="10">physics · world</text>
+</svg>
+<figcaption>The whole contract: named values in, named values out, fifty times a second. The bridge never decides anything.</figcaption>
+</figure>
 
 Fifty times a second it: reads incoming commands off the transport, applies each to CARLA (`ego.throttle` → that car's throttle, `world.weather.fog_density` → the weather), reads back the observations you declared (speeds, positions, inter-vehicle gaps, sensor values), and publishes them.
 
@@ -57,7 +80,7 @@ A bridge can look right (car moves, numbers change) while quietly scaling someth
 | `FrontObjDistance` | 17.90 | 17.86 m |
 | `FrontObjSpeedMps` | 8.36 | 8.33 m/s |
 
-All mapped signals within 1 %. Then the end-to-end proof, which I like because it validates the *loop* rather than any single wire: the ACC controller in our stack is an FMU (a compiled controller model) whose design parameter sets the minimum following distance. Swap the binary for one with a different parameter and watch what the simulated car does:
+All mapped signals within 1 %. Then the end-to-end proof, which I like because it validates the *loop* rather than any single wire: put a compiled controller (an FMU — see the [ACC post](/blog/adaptive-cruise-control-explained/)) in charge of the gap, note that its design parameter sets the minimum following distance, then swap the binary for one with a different parameter and watch what the simulated car does:
 
 | FMU design gap | gap the car actually holds in CARLA |
 | --- | --- |

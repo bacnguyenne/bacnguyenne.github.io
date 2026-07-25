@@ -7,13 +7,36 @@ tags: [sdv, automotive, control]
 
 ## Why this post
 
-I spent weeks integrating an adaptive-cruise-control (ACC) controller into our [virtual car](/blog/virtual-ecus-with-remotivelabs/) — and discovered that most of what I "knew" about ACC was folklore. The standards say something more precise, and occasionally the opposite of the folklore. This is the write-up I wish I'd had on day one: what ACC is per the standards, how the controller is actually structured, and how we test one in simulation. Key claims cite sources at the bottom.
+I spent weeks integrating an adaptive-cruise-control (ACC) controller into a [virtual car](/blog/virtual-ecus-with-remotivelabs/) — and discovered that most of what I "knew" about ACC was folklore. The standards say something more precise, and occasionally the opposite. This is the write-up I wish I'd had on day one: what ACC is per the standards, how the controller is actually structured, and how to test one in simulation without a car. Key claims cite sources at the bottom, so you can go deeper on any of them.
 
 ## What ACC is (and is not)
 
 ACC drives the throttle and brake for you, with two goals: **hold the driver's set speed** on an open road (classic cruise control), and **keep a safe gap** when there's a lead vehicle — slowing down behind traffic, speeding back up when the lane clears. It sees ahead with radar and camera. It does **not** steer (lane keeping is a separate function), and it is **not** a safety system: per SAE J3016, ACC alone is Level 1 assistance, and even with lane centering it's Level 2 — the driver supervises at all times [10].
 
-That last point deserves emphasis because it shapes the whole design: **ACC is comfort, not collision avoidance.** Its accelerations are deliberately gentle and jerk-limited. The emergency layer is a different pair of systems — Forward Collision Warning (which alerts but never brakes) and Automatic Emergency Braking — governed by a different standard with tighter time-to-collision thresholds [11][12][13]. The three form a timeline over TTC (distance ÷ closing speed): ACC adjusts early and smoothly at high TTC; FCW fires as TTC shrinks; AEB brakes hard when impact is imminent.
+That last point deserves emphasis because it shapes the whole design: **ACC is comfort, not collision avoidance.** Its accelerations are deliberately gentle and jerk-limited. The emergency layer is a different pair of systems — Forward Collision Warning (which alerts but never brakes) and Automatic Emergency Braking — governed by a different standard with tighter time-to-collision thresholds [11][12][13]. The three form a timeline over TTC (distance ÷ closing speed):
+
+<figure>
+<svg viewBox="0 0 720 130" role="img" aria-label="TTC timeline: at high time-to-collision ACC adjusts comfortably; as TTC shrinks FCW warns; near zero AEB brakes automatically" style="font-family: var(--font-sans, sans-serif); font-size: 13px;">
+  <defs>
+    <marker id="arr4" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--border-strong)"/>
+    </marker>
+  </defs>
+  <line x1="30" y1="95" x2="700" y2="95" stroke="var(--border-strong)" stroke-width="2" marker-end="url(#arr4)"/>
+  <text x="40" y="115" fill="var(--text-muted)" font-size="11">high TTC — relaxed</text>
+  <text x="640" y="115" text-anchor="end" fill="var(--text-muted)" font-size="11">TTC → 0 — imminent</text>
+  <rect x="50" y="35" width="190" height="44" rx="8" fill="var(--surface-2)" stroke="var(--border-strong)"/>
+  <text x="145" y="53" text-anchor="middle" fill="var(--heading)" font-weight="600">ACC comforts</text>
+  <text x="145" y="70" text-anchor="middle" fill="var(--text-muted)" font-size="10">adjusts early via time gap</text>
+  <rect x="270" y="35" width="190" height="44" rx="8" fill="var(--surface-2)" stroke="var(--border-strong)"/>
+  <text x="365" y="53" text-anchor="middle" fill="var(--heading)" font-weight="600">FCW warns</text>
+  <text x="365" y="70" text-anchor="middle" fill="var(--text-muted)" font-size="10">alerts — does NOT brake</text>
+  <rect x="490" y="35" width="190" height="44" rx="8" fill="var(--accent)" fill-opacity="0.12" stroke="var(--accent)"/>
+  <text x="585" y="53" text-anchor="middle" fill="var(--heading)" font-weight="700">AEB brakes</text>
+  <text x="585" y="70" text-anchor="middle" fill="var(--text-muted)" font-size="10">automatic emergency braking</text>
+</svg>
+<figcaption>Three systems, one axis: ACC lives at comfortable time-to-collision; FCW and AEB own the emergency end.</figcaption>
+</figure>
 
 One piece of folklore the standard kills directly: "real ACC must have Stop & Go." False — ISO 15622 defines two classes, **FSRA** (Full Speed Range, controls down to standstill, holds, restarts) and **LSRA** (Limited Speed Range, only works above a minimum speed and disengages below it) [1][2]. LSRA is valid ACC by the standard; Stop & Go is just today's market default.
 
@@ -31,6 +54,34 @@ The control architecture is elegant, and the standard states it in one sentence:
 - a **distance loop** computes the acceleration needed to hold the time gap behind the lead,
 - a **min-select** takes the safer (slower) of the two,
 - and the winning command is jerk-limited and clamped by speed-dependent acceleration envelopes before it goes to the actuators.
+
+<figure>
+<svg viewBox="0 0 720 190" role="img" aria-label="Two-loop ACC architecture: a speed loop and a distance loop each propose an acceleration; a min-select picks the safer one; jerk limits and envelopes shape the final command" style="font-family: var(--font-sans, sans-serif); font-size: 12px;">
+  <defs>
+    <marker id="arr5" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--border-strong)"/>
+    </marker>
+  </defs>
+  <rect x="20" y="25" width="170" height="50" rx="8" fill="var(--surface-2)" stroke="var(--border-strong)"/>
+  <text x="105" y="46" text-anchor="middle" fill="var(--heading)" font-weight="600">Speed loop</text>
+  <text x="105" y="63" text-anchor="middle" fill="var(--text-muted)" font-size="10">reach the set speed</text>
+  <rect x="20" y="115" width="170" height="50" rx="8" fill="var(--surface-2)" stroke="var(--border-strong)"/>
+  <text x="105" y="136" text-anchor="middle" fill="var(--heading)" font-weight="600">Distance loop</text>
+  <text x="105" y="153" text-anchor="middle" fill="var(--text-muted)" font-size="10">hold the time gap</text>
+  <line x1="190" y1="50" x2="295" y2="85" stroke="var(--border-strong)" stroke-width="2" marker-end="url(#arr5)"/>
+  <line x1="190" y1="140" x2="295" y2="105" stroke="var(--border-strong)" stroke-width="2" marker-end="url(#arr5)"/>
+  <circle cx="330" cy="95" r="34" fill="var(--accent)" fill-opacity="0.12" stroke="var(--accent)"/>
+  <text x="330" y="100" text-anchor="middle" fill="var(--heading)" font-weight="700">MIN</text>
+  <line x1="364" y1="95" x2="450" y2="95" stroke="var(--border-strong)" stroke-width="2" marker-end="url(#arr5)"/>
+  <rect x="455" y="70" width="150" height="50" rx="8" fill="var(--surface-2)" stroke="var(--border-strong)"/>
+  <text x="530" y="91" text-anchor="middle" fill="var(--heading)" font-weight="600">Jerk limits</text>
+  <text x="530" y="108" text-anchor="middle" fill="var(--text-muted)" font-size="10">+ accel envelope</text>
+  <line x1="605" y1="95" x2="665" y2="95" stroke="var(--accent)" stroke-width="2.5" marker-end="url(#arr5)"/>
+  <text x="672" y="88" fill="var(--heading)" font-weight="600" font-size="13">a</text>
+  <text x="680" y="93" fill="var(--heading)" font-size="10">cmd</text>
+</svg>
+<figcaption>Two independent proposals, one arbiter: the slower command always wins, then comfort shaping is applied.</figcaption>
+</figure>
 
 Inside the loops it's classic control engineering: PID feedback on the gap/speed error, feed-forward of the lead's acceleration (so you react as the lead brakes, not after the gap has already shrunk), rate limiters for comfort, and an extra gap margin against slow leads. The theory behind the constant time-gap policy — including why gaps are set in *time*, not meters — is the string-stability literature: disturbances must damp out along a platoon of followers rather than amplify [4][5][6].
 
@@ -62,7 +113,7 @@ Under the five friendly states, a production controller hides dozens of sub-stat
 
 ## Testing a real controller without a car
 
-Here's where this connects to the virtual-car series. The ACC controller we integrate isn't our code — it's a production controller model exported from Simulink as **FMUs** (Functional Mock-up Units, FMI 3.0 co-simulation): a zip with a signal-interface description plus compiled binaries. Three units — the HMI conditioning, the ACC brain, and a lane-occupancy/TTC observer — wired in a loop: driver wishes and the radar picture go in, one acceleration demand and dashboard status come out.
+Here's where this connects to the virtual-car series. In a typical project the ACC controller isn't your code — it's a production controller model from a supplier, exported from Simulink as **FMUs** (Functional Mock-up Units, FMI 3.0 co-simulation): a zip with a signal-interface description plus compiled binaries. A common split is three units — HMI conditioning, the ACC brain, and a lane-occupancy/TTC observer — wired in a loop: driver wishes and the radar picture go in, one acceleration demand and dashboard status come out.
 
 The FMU boundary is a gift for testing, because the controller becomes a black box with a typed signal interface, and you can bench it at three levels:
 
