@@ -21,14 +21,13 @@ const description = 'Posts on building with AI — agents, retrieval, evals, pro
 		<a href="#main" class="skip-link">Skip to content</a>
 		<Header />
 		<main id="main">
-			<section class="container page-head">
-				<p class="eyebrow">Writing</p>
+			<section class="container container-narrow page-head">
 				<h1>Blog</h1>
 				<p class="muted">{posts.length} {posts.length === 1 ? 'post' : 'posts'} on building with AI.</p>
 			</section>
-			<section class="container">
+			<section class="container container-narrow">
 				<h2 class="sr-only">All posts</h2>
-				<div class="grid">
+				<div class="post-list">
 					{posts.map((p) => <PostCard post={p} />)}
 				</div>
 			</section>
@@ -39,19 +38,12 @@ const description = 'Posts on building with AI — agents, retrieval, evals, pro
 
 <style>
 	.page-head {
-		padding: 3.5rem 1.25rem 1.5rem;
+		padding: 3rem 1.25rem 0.5rem;
 	}
 	.page-head h1 {
-		margin: 0.3rem 0 0.4rem;
+		margin: 0 0 0.4rem;
 	}
-	.grid {
-		display: grid;
-		grid-template-columns: repeat(2, 1fr);
-		gap: 1.5rem;
-	}
-	@media (max-width: 720px) {
-		.grid {
-			grid-template-columns: 1fr;
-		}
+	.post-list {
+		border-top: 1px solid var(--border);
 	}
 </style>

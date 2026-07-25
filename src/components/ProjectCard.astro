@@ -9,7 +9,6 @@ const { title, blurb, tech, result, context, year, repo, demo } = project;
 ---
 
 <article class="pcard">
-	<div class="pcard-top" aria-hidden="true"></div>
 	<div class="pcard-body">
 		<div class="pcard-head">
 			<h3 class="pcard-title">{title}</h3>
@@ -51,21 +50,10 @@ const { title, blurb, tech, result, context, year, repo, demo } = project;
 		background: var(--surface);
 		border: 1px solid var(--border);
 		border-radius: var(--radius);
-		overflow: hidden;
-		transition:
-			transform 0.18s ease,
-			border-color 0.18s ease,
-			box-shadow 0.25s ease;
+		transition: border-color 0.18s ease;
 	}
 	.pcard:hover {
-		transform: translateY(-3px);
-		border-color: color-mix(in srgb, var(--accent) 50%, var(--border));
-		box-shadow: var(--shadow-lg);
-	}
-	.pcard-top {
-		height: 4px;
-		background: var(--grad);
-		opacity: 0.85;
+		border-color: var(--border-strong);
 	}
 	.pcard-body {
 		display: flex;

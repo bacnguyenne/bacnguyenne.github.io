@@ -184,14 +184,11 @@ const articleLd = {
 		border: 1px solid var(--border);
 		border-radius: var(--radius-sm);
 		background: var(--surface);
-		transition:
-			border-color 0.18s ease,
-			transform 0.18s ease;
+		transition: border-color 0.18s ease;
 	}
 	.pn:hover {
 		text-decoration: none;
-		transform: translateY(-2px);
-		border-color: color-mix(in srgb, var(--accent) 50%, var(--border));
+		border-color: var(--border-strong);
 	}
 	.pn.next {
 		text-align: right;

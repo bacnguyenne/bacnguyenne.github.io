@@ -24,20 +24,19 @@ const featured = PROJECTS.filter((p) => p.featured).slice(0, 3);
 		<a href="#main" class="skip-link">Skip to content</a>
 		<Header />
 		<main id="main">
-			<section class="hero container">
-				<p class="eyebrow">AI Engineer · Ho Chi Minh City</p>
-				<h1>I build with <span class="grad-text">AI</span>.</h1>
+			<section class="hero container container-narrow">
+				<h1>Bac Nguyen</h1>
+				<p class="hero-role muted">AI Engineer · Software-defined vehicles · Ho Chi Minh City</p>
 				<p class="hero-sub">
-					I'm Bac — an AI Engineer working on software-defined vehicles. I build
-					computer-vision and edge-AI pipelines, virtual vehicle simulation, and multi-agent systems,
-					with a research background in speech, vision, and NLP. Here's my work, and what I've learned
-					shipping it.
+					I build computer-vision and edge-AI pipelines, virtual vehicle simulation, and multi-agent
+					systems — with a research background in speech, vision, and NLP. This site is my work and
+					what I've learned shipping it.
 				</p>
 				<div class="hero-cta">
 					<a class="btn btn-primary" href="/projects/">View projects</a>
 					<a class="btn" href="/blog/">Read the blog</a>
 					<a class="btn" href={GITHUB_URL} target="_blank" rel="me noopener">
-						GitHub ↗<span class="sr-only"> (opens in a new tab)</span>
+						GitHub<span class="sr-only"> (opens in a new tab)</span>
 					</a>
 				</div>
 			</section>
@@ -54,14 +53,14 @@ const featured = PROJECTS.filter((p) => p.featured).slice(0, 3);
 
 			{
 				latest.length > 0 && (
-					<section class="container block">
+					<section class="container container-narrow block">
 						<div class="block-head">
 							<h2>Writing</h2>
 							<a class="more" href="/blog/">
 								All posts →
 							</a>
 						</div>
-						<div class="grid posts">
+						<div class="post-list">
 							{latest.map((p) => (
 								<PostCard post={p} />
 							))}
@@ -76,24 +75,25 @@ const featured = PROJECTS.filter((p) => p.featured).slice(0, 3);
 
 <style>
 	.hero {
-		padding: clamp(3rem, 2rem + 6vw, 6rem) 1.25rem clamp(2rem, 1.5rem + 2vw, 3rem);
-		max-width: 52rem;
+		padding: clamp(3rem, 2rem + 4vw, 5rem) 1.25rem 1.5rem;
 	}
 	.hero h1 {
-		font-size: clamp(3rem, 1.8rem + 6vw, 5.5rem);
-		line-height: 1.02;
-		margin: 0.4rem 0 1rem;
+		margin: 0 0 0.35rem;
+	}
+	.hero-role {
+		font-size: 0.95rem;
+		margin: 0 0 1.2rem;
 	}
 	.hero-sub {
-		font-size: clamp(1.1rem, 1rem + 0.6vw, 1.3rem);
-		color: var(--text-muted);
-		max-width: 42rem;
-		margin: 0 0 1.8rem;
+		font-size: 1.1rem;
+		color: var(--text);
+		max-width: 38rem;
+		margin: 0 0 1.6rem;
 	}
 	.hero-cta {
 		display: flex;
 		flex-wrap: wrap;
-		gap: 0.75rem;
+		gap: 0.6rem;
 	}
 
 	.block {
@@ -103,15 +103,15 @@ const featured = PROJECTS.filter((p) => p.featured).slice(0, 3);
 		display: flex;
 		align-items: baseline;
 		justify-content: space-between;
-		margin-bottom: 1.5rem;
+		margin-bottom: 1.25rem;
 	}
 	.block-head h2 {
 		margin: 0;
 	}
 	.more {
 		color: var(--text-muted);
-		font-size: 0.95rem;
-		font-weight: 600;
+		font-size: 0.92rem;
+		font-weight: 500;
 		white-space: nowrap;
 	}
 	.more:hover {
@@ -121,10 +121,10 @@ const featured = PROJECTS.filter((p) => p.featured).slice(0, 3);
 	.grid {
 		display: grid;
 		grid-template-columns: repeat(3, 1fr);
-		gap: 1.5rem;
+		gap: 1.25rem;
 	}
-	.grid.posts {
-		grid-template-columns: repeat(2, 1fr);
+	.post-list {
+		border-top: 1px solid var(--border);
 	}
 	@media (max-width: 900px) {
 		.grid {
@@ -132,8 +132,7 @@ const featured = PROJECTS.filter((p) => p.featured).slice(0, 3);
 		}
 	}
 	@media (max-width: 640px) {
-		.grid,
-		.grid.posts {
+		.grid {
 			grid-template-columns: 1fr;
 		}
 	}

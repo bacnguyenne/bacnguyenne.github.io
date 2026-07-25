@@ -29,14 +29,14 @@ const { tag, posts } = Astro.props;
 		<a href="#main" class="skip-link">Skip to content</a>
 		<Header />
 		<main id="main">
-			<section class="container page-head">
+			<section class="container container-narrow page-head">
 				<a class="back" href="/tags/">← All tags</a>
 				<h1>#{tag}</h1>
 				<p class="muted">{posts.length} {posts.length === 1 ? 'post' : 'posts'}</p>
 			</section>
-			<section class="container">
+			<section class="container container-narrow">
 				<h2 class="sr-only">Posts tagged {tag}</h2>
-				<div class="grid">
+				<div class="post-list">
 					{posts.map((p) => <PostCard post={p} />)}
 				</div>
 			</section>
@@ -62,14 +62,7 @@ const { tag, posts } = Astro.props;
 	.page-head h1 {
 		margin: 0 0 0.3rem;
 	}
-	.grid {
-		display: grid;
-		grid-template-columns: repeat(2, 1fr);
-		gap: 1.5rem;
-	}
-	@media (max-width: 720px) {
-		.grid {
-			grid-template-columns: 1fr;
-		}
+	.post-list {
+		border-top: 1px solid var(--border);
 	}
 </style>
