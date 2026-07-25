@@ -26,6 +26,11 @@ docker compose \
 
 One trick worth stealing: put Android's device state on a **named volume**. The first boot unpacks images into it (~3 min); every later `compose down`/`up` on the same machine finds them and warm-boots in ~35 s. Free 5× speedup for the daily loop.
 
+This is what boots — a real Android Automotive home screen, streamed to the browser, with gear state, range, and vehicle controls wired to the virtual buses:
+
+![The Android Automotive 15 home screen running in Cuttlefish: map, weather and media cards, P-R-N-D gear indicator, battery range, ambient light controls and dual-zone climate bar](../../assets/aaos-cuttlefish-home.png)
+*Not a mockup — AAOS 15 in Cuttlefish, viewed over WebRTC. The gear strip and range readout are fed by VHAL properties you can drive from the bus.*
+
 ## Bug #1 — no vsock on WSL2
 
 On Linux everything booted. On WSL2, crosvm died instantly: creating any `AF_VSOCK` socket returns `ENOSYS`. Cuttlefish uses vsock for most host↔guest channels, so this is fatal.

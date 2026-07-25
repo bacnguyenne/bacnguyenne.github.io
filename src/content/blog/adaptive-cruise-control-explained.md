@@ -107,6 +107,9 @@ Why doesn't a 1.2 s gap end in a crash when the lead brakes? Because τ is time:
 
 Every ACC implementation is a state machine wearing a controller as a hat. The driver-visible states: **OFF → STANDBY** (ready, not controlling) **→ ACTIVE**, where ACTIVE splits into **CRUISE** (road clear, hold set speed) and **FOLLOW** (lead ahead, hold gap), plus **OVERRIDE** (driver presses throttle — ACC pauses and resumes on release) and the **STOP & GO** cluster for FSRA: decelerate to standstill, hold the brake, wait for confirmation after a long stop, launch when the lead departs.
 
+![The ACC mode state machine: OFF powers on to STANDBY; SET engages ACTIVE, which alternates between CRUISE and FOLLOW as a lead appears and leaves; OVERRIDE pauses on throttle; STOP & GO handles standstill](../../assets/acc-state-machine.png)
+*The five driver-visible modes and the transitions between them. Exits from ACTIVE — brake, CANCEL, fault — are where safety lives.*
+
 The exits from ACTIVE are where safety lives: brake pedal → immediate STANDBY; CANCEL → STANDBY with the set speed kept; a detected fault → safe disengage. The HMI maps onto this directly — SET engages and stores the current speed, RES re-engages to the stored speed, +/− steps it, a gap button cycles near/medium/far.
 
 Under the five friendly states, a production controller hides dozens of sub-states in one byte-sized mode variable. Which is why the dynamic corner cases get their own names in every test catalog: **cut-in** (a car merges ahead → brake gently, re-open the gap), **cut-out** (lead leaves → back to set speed), **target loss** (occlusion → hold behavior until debounce clears), **curves** (slow for curvature, don't chase out-of-lane objects). And the famous limit: a *stationary* object at high speed may legitimately not trigger a reaction — that's the AEB layer's job [1].
@@ -114,6 +117,9 @@ Under the five friendly states, a production controller hides dozens of sub-stat
 ## Testing a real controller without a car
 
 Here's where this connects to the virtual-car series. In a typical project the ACC controller isn't your code — it's a production controller model from a supplier, exported from Simulink as **FMUs** (Functional Mock-up Units, FMI 3.0 co-simulation): a zip with a signal-interface description plus compiled binaries. A common split is three units — HMI conditioning, the ACC brain, and a lane-occupancy/TTC observer — wired in a loop: driver wishes and the radar picture go in, one acceleration demand and dashboard status come out.
+
+![Wiring of the three ACC FMUs: driver buttons flow through the HMI unit into the ACC brain, the front sensor and ego speed feed both the brain and the lane-occupancy observer, and out come one acceleration command plus dashboard warnings](../../assets/acc-fmu-wiring.png)
+*Three black boxes, one loop: HMI conditioning → the ACC brain → acceleration out, with a TTC observer alongside.*
 
 The FMU boundary is a gift for testing, because the controller becomes a black box with a typed signal interface, and you can bench it at three levels:
 

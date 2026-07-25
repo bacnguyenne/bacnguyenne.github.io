@@ -70,6 +70,11 @@ pairs:
 
 **One bridge, many tenants.** CARLA is heavy; running one instance per project would be miserable. So the bridge is a singleton that watches a directory of case folders: drop a config in and it hot-loads, edit and it reloads, delete and its cars despawn — no restart, so attaching a new project never drops CARLA for the ones already running. The corollary rule: shared process, shared world — *the map belongs to whoever attaches first*.
 
+Here's what the closed loop looks like live — CARLA rendering the world while a HUD overlays the bus signals flowing through the bridge (ego speed in, ACC state and acceleration demand out):
+
+![A CARLA scene with the ego vehicle on a road and a pedestrian crossing ahead; an overlay shows live bus signals — ego speed 53.9 km/h, ACC enabled, state FOLLOW, acceleration demand +0.80 m/s²](../../assets/carla-acc-follow.png)
+*The bridge at work: the left panel is bus traffic (in and out), the scene is CARLA's ground truth. When these two disagree, the bridge is lying.*
+
 ## Verify against ground truth, not vibes
 
 A bridge can look right (car moves, numbers change) while quietly scaling something wrong. The only test that settles it: record the signals off the bus and, at the same moment, read CARLA directly — then compare.
