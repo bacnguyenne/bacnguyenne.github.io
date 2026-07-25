@@ -1,7 +1,7 @@
 ---
 title: 'Shift left, shift north: the two axes of SDV development'
 description: 'The two moves that define modern vehicle software work: shift left (validate earlier, against virtual targets) and shift north (develop at higher abstraction, against vehicle APIs instead of bus signals).'
-pubDate: 'Jul 28 2026'
+pubDate: 'Jul 16 2026'
 tags: [sdv, automotive, fundamentals]
 ---
 

@@ -1,7 +1,7 @@
 ---
 title: 'The XP practices that outlived the hype'
 description: 'A practice-by-practice look at Extreme Programming: what became the industry default, what stayed niche, and why the split is mostly about tooling.'
-pubDate: 'Jul 31 2026'
+pubDate: 'Jul 19 2026'
 tags: [engineering-practice, agile]
 ---
 

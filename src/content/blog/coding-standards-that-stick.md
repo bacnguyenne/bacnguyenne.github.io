@@ -1,7 +1,7 @@
 ---
 title: 'Coding standards people actually follow'
 description: 'What belongs in a coding standard, what belongs in a config file, and how to enforce the difference with formatters, hooks and CI gates.'
-pubDate: 'Aug 2 2026'
+pubDate: 'Jul 21 2026'
 tags: [engineering-practice, code-quality]
 ---
 

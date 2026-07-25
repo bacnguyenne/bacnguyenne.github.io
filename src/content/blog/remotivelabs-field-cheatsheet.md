@@ -1,7 +1,7 @@
 ---
 title: 'RemotiveLabs field cheatsheet'
 description: 'A one-page, hand-verified reference for the RemotiveLabs toolchain: CLI command map, broker verbs, record & replay in 3 steps, offsets, versions, and every gotcha we hit.'
-pubDate: 'Jul 26 2026'
+pubDate: 'Jul 14 2026'
 tags: [sdv, automotive, reference]
 heroImage: '../../assets/remotivelabs-cheatsheet.png'
 ---

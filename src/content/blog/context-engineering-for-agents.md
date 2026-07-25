@@ -1,7 +1,7 @@
 ---
 title: 'The context window is the constraint, not the model'
 description: 'Why long coding-agent sessions degrade, what compaction really loses, and the habits that keep an agent sharp: grep-first, sub-agents, short memory files.'
-pubDate: 'Aug 8 2026'
+pubDate: 'Jul 25 2026'
 tags: [llm, coding-agents, context]
 ---
 

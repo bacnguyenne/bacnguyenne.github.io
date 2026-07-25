@@ -1,7 +1,7 @@
 ---
 title: 'Adaptive Cruise Control, from the ISO standard to simulation'
 description: 'What ACC actually is per ISO 15622 — sensing, the two-loop controller, time-gap policy, the state machine — and how we test a real ACC controller as an FMU in a virtual car.'
-pubDate: 'Jul 27 2026'
+pubDate: 'Jul 15 2026'
 tags: [sdv, automotive, control]
 ---
 

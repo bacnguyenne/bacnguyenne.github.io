@@ -1,7 +1,7 @@
 ---
 title: 'Test automation that survives contact with a real project'
 description: 'How keyword-driven suites in Robot Framework are built, how they rot, and the maintenance rules that keep them running past month three.'
-pubDate: 'Aug 3 2026'
+pubDate: 'Jul 22 2026'
 tags: [engineering-practice, testing]
 ---
 

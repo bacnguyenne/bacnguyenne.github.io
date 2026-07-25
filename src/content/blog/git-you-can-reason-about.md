@@ -1,7 +1,7 @@
 ---
 title: 'Git you can reason about'
 description: 'A working mental model of Git — snapshots, pointers, three trees — then the daily commands and how to escape the five situations that scare people.'
-pubDate: 'Aug 1 2026'
+pubDate: 'Jul 20 2026'
 tags: [engineering-practice, git]
 ---
 

@@ -1,7 +1,7 @@
 ---
 title: 'Technical debt is a decision, not a sin'
 description: 'How to tell deliberate debt from accidental mess, measure what it costs you, and make the case for paying it down in numbers a manager will accept.'
-pubDate: 'Aug 2 2026'
+pubDate: 'Jul 21 2026'
 tags: [engineering-practice, code-quality]
 ---
 

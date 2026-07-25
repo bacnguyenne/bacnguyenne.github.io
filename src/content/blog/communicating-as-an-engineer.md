@@ -1,7 +1,7 @@
 ---
 title: 'Communicating so people actually understand you'
 description: 'Treat miscommunication like a pipeline bug: find the stage that failed, then apply the fix that actually belongs there.'
-pubDate: 'Jul 30 2026'
+pubDate: 'Jul 18 2026'
 tags: [soft-skills, communication]
 ---
 

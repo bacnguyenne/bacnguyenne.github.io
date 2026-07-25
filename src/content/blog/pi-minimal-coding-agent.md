@@ -1,7 +1,7 @@
 ---
 title: 'Pi: a coding agent small enough to read'
 description: 'A hands-on tour of Pi 0.82.1 — install, the four default tools, session trees, all five extension points, and when a bigger harness wins.'
-pubDate: '2026-08-07'
+pubDate: 'Jul 24 2026'
 tags: [llm, coding-agents, developer-tools]
 ---
 

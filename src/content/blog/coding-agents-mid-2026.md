@@ -1,7 +1,7 @@
 ---
 title: 'A field guide to coding agents, mid-2026'
 description: 'The coding agents that exist in mid-2026, sorted by shape instead of vendor, with prices, licences, benchmark caveats and a decision guide.'
-pubDate: '2026-08-07'
+pubDate: 'Jul 24 2026'
 tags: [llm, coding-agents, tooling]
 ---
 

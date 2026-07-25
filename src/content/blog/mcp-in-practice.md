@@ -1,7 +1,7 @@
 ---
 title: 'MCP in practice, and where it bites'
 description: 'What MCP is in mid-2026 — primitives, transports, registry — and the four things that bite once you actually install servers.'
-pubDate: 'Aug 8 2026'
+pubDate: 'Jul 25 2026'
 tags: [llm, coding-agents, mcp]
 ---
 

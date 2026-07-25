@@ -1,7 +1,7 @@
 ---
 title: 'Five Whys: the number is wrong and the answer usually blames someone'
 description: 'How to run a root cause analysis that ends in a fix ticket instead of a symptom, a philosophy, or a person to be more careful.'
-pubDate: 'Aug 4 2026'
+pubDate: 'Jul 23 2026'
 tags: [engineering-practice, thinking]
 ---
 

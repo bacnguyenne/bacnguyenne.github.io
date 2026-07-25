@@ -1,7 +1,7 @@
 ---
 title: 'Bridging CARLA to the CAN bus'
 description: 'Giving a virtual car real physics: a pure-I/O bridge between the CARLA driving simulator and vehicle bus signals — design, verification against ground truth, and the bugs.'
-pubDate: 'Jul 25 2026'
+pubDate: 'Jul 13 2026'
 tags: [sdv, carla, simulation]
 ---
 

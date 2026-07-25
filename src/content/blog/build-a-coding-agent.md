@@ -1,7 +1,7 @@
 ---
 title: 'Write your own coding agent in an afternoon'
 description: 'A complete, runnable Python coding agent — loop, tool schemas, read/write/edit/bash, permission prompt — plus the failure modes nobody warns you about.'
-pubDate: '2026-08-07'
+pubDate: 'Jul 24 2026'
 tags: [llm, coding-agents, python]
 ---
 

@@ -1,7 +1,7 @@
 ---
 title: 'TDD without the dogma'
 description: 'Red-green-refactor with a worked Python example, what test-first actually buys you, and the places where it earns its keep least.'
-pubDate: 'Aug 1 2026'
+pubDate: 'Jul 20 2026'
 tags: [engineering-practice, testing]
 ---
 

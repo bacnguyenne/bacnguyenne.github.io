@@ -1,7 +1,7 @@
 ---
 title: 'Agile, before the frameworks'
 description: 'What the four values and twelve principles actually say, which ones matter in practice, how to spot agile theatre, and when plan-driven is the right call.'
-pubDate: 'Jul 30 2026'
+pubDate: 'Jul 18 2026'
 tags: [engineering-practice, agile]
 ---
 

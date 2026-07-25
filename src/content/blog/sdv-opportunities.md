@@ -1,7 +1,7 @@
 ---
 title: 'Where software-defined vehicles are heading'
 description: 'The opportunity map of SDV: what changes economically with OTA and features as software, which technical directions are compounding, and why now is an unusually good entry point for software engineers.'
-pubDate: 'Jul 29 2026'
+pubDate: 'Jul 17 2026'
 tags: [sdv, automotive, career]
 ---
 

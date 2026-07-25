@@ -1,7 +1,7 @@
 ---
 title: 'Your first virtual ECU: a hazard-light walkthrough'
 description: 'From zero to a tested virtual ECU with RemotiveLabs, file by file: signal databases, a Python behavioral model, topology build, and a pytest that proves it works.'
-pubDate: 'Jul 26 2026'
+pubDate: 'Jul 14 2026'
 tags: [sdv, automotive, tutorial]
 ---
 

@@ -1,7 +1,7 @@
 ---
 title: 'Ten working principles for engineers, and how each one fails'
 description: 'Ten principles that make an engineer good to work with, each grounded in a real situation, plus the failure mode each one produces when overdone.'
-pubDate: 'Jul 31 2026'
+pubDate: 'Jul 19 2026'
 tags: [soft-skills, career]
 ---
 

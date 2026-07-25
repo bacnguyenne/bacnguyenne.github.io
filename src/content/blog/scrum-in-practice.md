@@ -1,7 +1,7 @@
 ---
 title: 'Scrum in practice'
 description: 'The roles, events and artifacts Scrum actually defines, how each one degrades on a real team, and the kinds of work it fits badly.'
-pubDate: 'Jul 31 2026'
+pubDate: 'Jul 19 2026'
 tags: [engineering-practice, agile]
 ---
 

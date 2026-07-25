@@ -1,7 +1,7 @@
 ---
 title: 'Letting a coding agent run commands without regret'
 description: 'A working threat model for coding agents, the sandbox options ranked by real strength, and a graded setup for side projects, work repos and CI.'
-pubDate: '2026-08-07'
+pubDate: 'Jul 24 2026'
 tags: [llm, coding-agents, security]
 ---
 

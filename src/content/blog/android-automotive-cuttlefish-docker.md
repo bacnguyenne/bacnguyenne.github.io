@@ -1,7 +1,7 @@
 ---
 title: 'Android Automotive in Docker: a Cuttlefish debugging story'
 description: 'Booting Android Automotive 15 as the virtual infotainment unit of a simulated car — and the two deep bugs on WSL2: vsock via LD_PRELOAD, and WebRTC ICE vs Docker Desktop.'
-pubDate: 'Jul 24 2026'
+pubDate: 'Jul 12 2026'
 tags: [sdv, android-automotive, debugging]
 ---
 

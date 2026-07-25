@@ -1,7 +1,7 @@
 ---
 title: 'Every methodology is the same work in a different order'
 description: 'The phases every software project runs through, why waterfall, iterative and agile only differ in ordering, and how to choose one deliberately.'
-pubDate: 'Jul 30 2026'
+pubDate: 'Jul 18 2026'
 tags: [engineering-practice, process]
 ---
 

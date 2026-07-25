@@ -1,7 +1,7 @@
 ---
 title: 'Benchmarks will not tell you which agent to use'
 description: 'Why SWE-bench Verified and Terminal-Bench are weak buying signals, and a two-week protocol for evaluating a coding agent on your own repository.'
-pubDate: '2026-08-07'
+pubDate: 'Jul 24 2026'
 tags: [llm, coding-agents, evaluation]
 ---
 

@@ -1,7 +1,7 @@
 ---
 title: 'A virtual car is just Docker Compose'
 description: 'Build a virtual vehicle from containerized ECUs with RemotiveLabs: signal databases, CAN/LIN/SOME-IP buses, behavioral models — the mental model, a worked topology, and the gotchas.'
-pubDate: 'Jul 22 2026'
+pubDate: 'Jul 11 2026'
 tags: [sdv, simulation, automotive]
 ---
 

@@ -1,7 +1,7 @@
 ---
 title: 'Eight standards for checking your own reasoning'
 description: 'A review checklist for design docs, bug diagnoses and estimates, plus the five biases that quietly get past it.'
-pubDate: 'Aug 4 2026'
+pubDate: 'Jul 23 2026'
 tags: [soft-skills, thinking]
 ---
 

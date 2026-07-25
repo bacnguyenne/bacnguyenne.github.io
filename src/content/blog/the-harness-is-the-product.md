@@ -1,7 +1,7 @@
 ---
 title: 'The model converged. The harness did not.'
 description: 'What a coding-agent harness actually is — loop, tools, context, permissions, extensions — and why the same model scores differently in each one.'
-pubDate: '2026-08-07'
+pubDate: 'Jul 24 2026'
 tags: [llm, coding-agents, developer-tools]
 ---
 
