@@ -9,7 +9,22 @@ import { SITE_TITLE } from '../../consts';
 const posts = (await getCollection('blog', ({ data }) => data.draft !== true)).sort(
 	(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
 );
-const description = 'Posts on building with AI — agents, retrieval, evals, prompting, and shipping to production.';
+
+// ponytail: topic derived from tags — one map here beats a frontmatter field in every file
+function topicOf(tags: string[]): string {
+	if (tags.includes('sdv')) return 'Software-Defined Vehicles';
+	if (tags.includes('research') || tags.includes('computer-vision') || tags.includes('asr'))
+		return 'Research Notes';
+	return 'AI & LLM Engineering';
+}
+
+const TOPIC_ORDER = ['Software-Defined Vehicles', 'AI & LLM Engineering', 'Research Notes'];
+const groups = TOPIC_ORDER.map((topic) => ({
+	topic,
+	posts: posts.filter((p) => topicOf(p.data.tags) === topic),
+})).filter((g) => g.posts.length > 0);
+
+const description = 'Posts on software-defined vehicles, AI engineering, and applied research.';
 ---
 
 <!doctype html>
@@ -23,13 +38,24 @@ const description = 'Posts on building with AI — agents, retrieval, evals, pro
 		<main id="main">
 			<section class="container container-narrow page-head">
 				<h1>Blog</h1>
-				<p class="muted">{posts.length} {posts.length === 1 ? 'post' : 'posts'} on building with AI.</p>
+				<p class="muted">
+					{posts.length} posts across {groups.length} topics: software-defined vehicles, AI
+					engineering, and research notes.
+				</p>
 			</section>
 			<section class="container container-narrow">
-				<h2 class="sr-only">All posts</h2>
-				<div class="post-list">
-					{posts.map((p) => <PostCard post={p} />)}
-				</div>
+				{
+					groups.map((g) => (
+						<div class="topic-group">
+							<h2 class="topic-head">{g.topic}</h2>
+							<div class="post-list">
+								{g.posts.map((p) => (
+									<PostCard post={p} />
+								))}
+							</div>
+						</div>
+					))
+				}
 			</section>
 		</main>
 		<Footer />
@@ -43,7 +69,13 @@ const description = 'Posts on building with AI — agents, retrieval, evals, pro
 	.page-head h1 {
 		margin: 0 0 0.4rem;
 	}
-	.post-list {
-		border-top: 1px solid var(--border);
+	.topic-group {
+		margin-top: 2.5rem;
+	}
+	.topic-head {
+		font-size: 1.05rem;
+		margin: 0 0 0.25rem;
+		padding-bottom: 0.5rem;
+		border-bottom: 1px solid var(--border);
 	}
 </style>
