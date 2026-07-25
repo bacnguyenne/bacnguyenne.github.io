@@ -13,6 +13,8 @@ const posts = (await getCollection('blog', ({ data }) => data.draft !== true)).s
 // ponytail: topic derived from tags — one map here beats a frontmatter field in every file
 function topicOf(tags: string[]): string {
 	if (tags.includes('sdv')) return 'sdv';
+	if (tags.includes('engineering-practice')) return 'practice';
+	if (tags.includes('soft-skills')) return 'working';
 	if (tags.includes('research') || tags.includes('computer-vision') || tags.includes('asr'))
 		return 'research';
 	return 'ai';
@@ -28,6 +30,17 @@ const TOPICS = [
 		key: 'ai',
 		label: 'AI & LLM Engineering',
 		blurb: 'Agents, retrieval, structured outputs, serving and fine-tuning open models.',
+	},
+	{
+		key: 'practice',
+		label: 'Engineering Practice',
+		blurb: 'How software actually gets built: process, testing, version control, code quality.',
+	},
+	{
+		key: 'working',
+		label: 'Working & Communication',
+		blurb:
+			'Communicating clearly, thinking clearly, and the habits that make an engineer easy to work with.',
 	},
 	{
 		key: 'research',
