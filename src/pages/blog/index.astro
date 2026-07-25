@@ -12,16 +12,33 @@ const posts = (await getCollection('blog', ({ data }) => data.draft !== true)).s
 
 // ponytail: topic derived from tags — one map here beats a frontmatter field in every file
 function topicOf(tags: string[]): string {
-	if (tags.includes('sdv')) return 'Software-Defined Vehicles';
+	if (tags.includes('sdv')) return 'sdv';
 	if (tags.includes('research') || tags.includes('computer-vision') || tags.includes('asr'))
-		return 'Research Notes';
-	return 'AI & LLM Engineering';
+		return 'research';
+	return 'ai';
 }
 
-const TOPIC_ORDER = ['Software-Defined Vehicles', 'AI & LLM Engineering', 'Research Notes'];
-const groups = TOPIC_ORDER.map((topic) => ({
-	topic,
-	posts: posts.filter((p) => topicOf(p.data.tags) === topic),
+const TOPICS = [
+	{
+		key: 'sdv',
+		label: 'Software-Defined Vehicles',
+		blurb: 'Virtual ECUs, simulation, vehicle APIs, and the shift to software-first cars.',
+	},
+	{
+		key: 'ai',
+		label: 'AI & LLM Engineering',
+		blurb: 'Agents, retrieval, structured outputs, serving and fine-tuning open models.',
+	},
+	{
+		key: 'research',
+		label: 'Research Notes',
+		blurb: 'Speech, vision, and the lessons that came out of the papers.',
+	},
+];
+
+const groups = TOPICS.map((t) => ({
+	...t,
+	posts: posts.filter((p) => topicOf(p.data.tags) === t.key),
 })).filter((g) => g.posts.length > 0);
 
 const description = 'Posts on software-defined vehicles, AI engineering, and applied research.';
@@ -36,27 +53,40 @@ const description = 'Posts on software-defined vehicles, AI engineering, and app
 		<a href="#main" class="skip-link">Skip to content</a>
 		<Header />
 		<main id="main">
-			<section class="container container-narrow page-head">
+			<section class="container page-head">
 				<h1>Blog</h1>
-				<p class="muted">
-					{posts.length} posts across {groups.length} topics: software-defined vehicles, AI
-					engineering, and research notes.
+				<p class="muted lede">
+					{posts.length} posts across {groups.length} topics. Jump to a section:
 				</p>
+				<nav class="jump" aria-label="Topics">
+					{
+						groups.map((g) => (
+							<a class="jump-link" href={`#${g.key}`}>
+								{g.label} <span class="count">{g.posts.length}</span>
+							</a>
+						))
+					}
+				</nav>
 			</section>
-			<section class="container container-narrow">
-				{
-					groups.map((g) => (
-						<div class="topic-group">
-							<h2 class="topic-head">{g.topic}</h2>
-							<div class="post-list">
-								{g.posts.map((p) => (
-									<PostCard post={p} />
-								))}
-							</div>
+
+			{
+				groups.map((g) => (
+					<section class="container topic" id={g.key}>
+						<div class="topic-label">
+							<h2>{g.label}</h2>
+							<p class="muted">{g.blurb}</p>
+							<p class="topic-count muted">
+								{g.posts.length} {g.posts.length === 1 ? 'post' : 'posts'}
+							</p>
 						</div>
-					))
-				}
-			</section>
+						<div class="post-list">
+							{g.posts.map((p) => (
+								<PostCard post={p} />
+							))}
+						</div>
+					</section>
+				))
+			}
 		</main>
 		<Footer />
 	</body>
@@ -64,18 +94,83 @@ const description = 'Posts on software-defined vehicles, AI engineering, and app
 
 <style>
 	.page-head {
-		padding: 3rem 1.25rem 0.5rem;
+		padding: 3rem 1.25rem 0;
 	}
 	.page-head h1 {
 		margin: 0 0 0.4rem;
 	}
-	.topic-group {
-		margin-top: 2.5rem;
+	.lede {
+		margin: 0 0 1rem;
 	}
-	.topic-head {
-		font-size: 1.05rem;
-		margin: 0 0 0.25rem;
-		padding-bottom: 0.5rem;
-		border-bottom: 1px solid var(--border);
+	.jump {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.5rem;
+	}
+	.jump-link {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.45rem;
+		font-size: 0.9rem;
+		font-weight: 500;
+		color: var(--text);
+		border: 1px solid var(--border-strong);
+		border-radius: 999px;
+		padding: 0.35rem 0.85rem;
+		transition:
+			border-color 0.15s ease,
+			color 0.15s ease;
+	}
+	.jump-link:hover {
+		text-decoration: none;
+		color: var(--accent);
+		border-color: var(--accent);
+	}
+	.count {
+		font-size: 0.78rem;
+		color: var(--text-muted);
+		font-variant-numeric: tabular-nums;
+	}
+
+	.topic {
+		display: grid;
+		grid-template-columns: 16rem 1fr;
+		gap: 0 3rem;
+		padding-top: 3rem;
+		margin-top: 3rem;
+		border-top: 2px solid var(--border-strong);
+		scroll-margin-top: 5rem;
+	}
+	.topic-label {
+		position: sticky;
+		top: 6rem;
+		align-self: start;
+	}
+	.topic-label h2 {
+		margin: 0 0 0.5rem;
+		font-size: 1.5rem;
+		line-height: 1.2;
+	}
+	.topic-label p {
+		font-size: 0.92rem;
+		margin: 0;
+	}
+	.topic-count {
+		margin-top: 0.6rem !important;
+		font-size: 0.82rem !important;
+		font-variant-numeric: tabular-nums;
+	}
+	.post-list > :global(.post-row:first-child) {
+		padding-top: 0;
+	}
+
+	@media (max-width: 860px) {
+		.topic {
+			grid-template-columns: 1fr;
+			gap: 1.25rem;
+		}
+		.topic-label {
+			position: static;
+		}
 	}
 </style>

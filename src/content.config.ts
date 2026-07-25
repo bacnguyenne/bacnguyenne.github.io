@@ -19,4 +19,18 @@ const blog = defineCollection({
 		}),
 });
 
-export const collections = { blog };
+// Vietnamese translation of the SDV101 guide (sdv.guide, CC BY 4.0).
+const sdv101 = defineCollection({
+	loader: glob({ base: './src/content/sdv101', pattern: '**/*.md' }),
+	schema: z.object({
+		title: z.string(),
+		description: z.string(),
+		order: z.number(),
+		part: z.string(),
+		depth: z.number().default(0),
+		origTitle: z.string(),
+		origUrl: z.string(),
+	}),
+});
+
+export const collections = { blog, sdv101 };

@@ -1,0 +1,124 @@
+---
+import BaseHead from '../../components/BaseHead.astro';
+import Footer from '../../components/Footer.astro';
+import Header from '../../components/Header.astro';
+import { SITE_TITLE } from '../../consts';
+import { getLessons } from '../../lib/sdv101';
+
+const sdv101 = await getLessons();
+const description =
+	'Khoá học miễn phí bằng tiếng Việt: SDV101 — nhập môn Software-Defined Vehicle, dịch từ SDV Guide.';
+---
+
+<!doctype html>
+<html lang="vi">
+	<head>
+		<BaseHead title={`Khoá học — ${SITE_TITLE}`} description={description} />
+	</head>
+	<body>
+		<a href="#main" class="skip-link">Chuyển tới nội dung</a>
+		<Header />
+		<main id="main">
+			<section class="container container-narrow head">
+				<p class="eyebrow">Khoá học</p>
+				<h1>Học miễn phí, bằng tiếng Việt</h1>
+				<p class="lede">
+					Tài liệu kỹ thuật chất lượng cao phần lớn chỉ có tiếng Anh. Mục này là các khoá học được
+					dịch trọn vẹn sang tiếng Việt — giữ nguyên nội dung, hình ảnh và cấu trúc của bản gốc.
+				</p>
+			</section>
+
+			<section class="container courses">
+				<article class="course-card">
+					<p class="c-tag">Software-Defined Vehicle</p>
+					<h2><a href="/course/sdv101/">SDV101 — Nhập môn Software-Defined Vehicle</a></h2>
+					<p class="c-desc">
+						Khoá nền tảng về xe được định nghĩa bằng phần mềm: SDV là gì, bài học từ ngành Internet
+						và smartphone, kiến trúc E/E, SOA và vehicle API, OTA, app store trên xe, V-model, shift
+						left và xe ảo.
+					</p>
+					<ul class="c-meta">
+						<li><strong>{sdv101.length}</strong> bài</li>
+						<li>4 phần</li>
+						<li>Tiếng Việt</li>
+					</ul>
+					<p class="c-src muted">
+						Dịch từ <a href="https://www.sdv.guide/sdv101" rel="nofollow noopener" target="_blank"
+							>SDV Guide</a
+						> · © 2024 Dirk Slama · <a
+							href="https://creativecommons.org/licenses/by/4.0/"
+							rel="nofollow noopener"
+							target="_blank">CC BY 4.0</a
+						>
+					</p>
+					<a class="btn btn-primary" href="/course/sdv101/">Vào khoá học</a>
+				</article>
+			</section>
+		</main>
+		<Footer />
+	</body>
+</html>
+
+<style>
+	.head {
+		padding: 3rem 1.25rem 0;
+	}
+	.head h1 {
+		margin: 0.3rem 0 0.6rem;
+	}
+	.lede {
+		font-size: 1.08rem;
+		margin: 0;
+	}
+	.courses {
+		padding-top: 2.5rem;
+	}
+	.course-card {
+		border: 1px solid var(--border);
+		border-left: 3px solid var(--accent);
+		border-radius: var(--radius);
+		padding: 1.6rem 1.8rem 1.8rem;
+		background: var(--surface);
+		max-width: 46rem;
+	}
+	.c-tag {
+		margin: 0 0 0.3rem;
+		font-size: 0.76rem;
+		font-weight: 700;
+		letter-spacing: 0.06em;
+		text-transform: uppercase;
+		color: var(--text-muted);
+	}
+	.course-card h2 {
+		margin: 0 0 0.6rem;
+		font-size: 1.4rem;
+	}
+	.course-card h2 a {
+		color: var(--heading);
+	}
+	.course-card h2 a:hover {
+		color: var(--accent);
+		text-decoration: none;
+	}
+	.c-desc {
+		margin: 0 0 0.9rem;
+		color: var(--text-muted);
+	}
+	.c-meta {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 1.2rem;
+		list-style: none;
+		margin: 0 0 0.9rem;
+		padding: 0;
+		font-size: 0.9rem;
+		color: var(--text-muted);
+	}
+	.c-meta strong {
+		color: var(--heading);
+	}
+	.c-src {
+		font-size: 0.85rem;
+		margin: 0 0 1.2rem;
+	}
+</style>

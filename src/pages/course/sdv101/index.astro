@@ -1,0 +1,178 @@
+---
+import BaseHead from '../../../components/BaseHead.astro';
+import Footer from '../../../components/Footer.astro';
+import Header from '../../../components/Header.astro';
+import { getLessons, groupByPart } from '../../../lib/sdv101';
+
+const lessons = await getLessons();
+const groups = groupByPart(lessons);
+const first = lessons[0];
+const description =
+	'Bản dịch tiếng Việt đầy đủ của SDV101 — khoá học nền tảng về Software-Defined Vehicle từ SDV Guide (Dirk Slama, CC BY 4.0).';
+---
+
+<!doctype html>
+<html lang="vi">
+	<head>
+		<BaseHead
+			title="SDV101 — Khoá học Software-Defined Vehicle (tiếng Việt)"
+			description={description}
+		/>
+	</head>
+	<body>
+		<a href="#main" class="skip-link">Chuyển tới nội dung</a>
+		<Header />
+		<main id="main">
+			<section class="container course-head">
+				<p class="eyebrow">Khoá học · Bản dịch tiếng Việt</p>
+				<h1>SDV101 — Nhập môn Software-Defined Vehicle</h1>
+				<p class="lede">
+					Toàn bộ {lessons.length} bài của khoá SDV101, dịch sang tiếng Việt từ
+					<a href="https://www.sdv.guide/sdv101" rel="nofollow noopener" target="_blank">SDV Guide</a>.
+					Nội dung bám sát bản gốc — cùng cấu trúc, cùng hình, cùng bảng, chỉ khác ngôn ngữ.
+				</p>
+				<div class="cta">
+					{first && <a class="btn btn-primary" href={`/course/sdv101/${first.id}/`}>Bắt đầu học</a>}
+					<a class="btn" href="https://www.sdv.guide/sdv101" rel="nofollow noopener" target="_blank">
+						Bản gốc tiếng Anh
+					</a>
+				</div>
+				<p class="license muted">
+					Nguồn: <a href="https://www.sdv.guide/" rel="nofollow noopener" target="_blank">SDV Guide</a> ·
+					© 2024 Dirk Slama, Germany · Giấy phép <a
+						href="https://creativecommons.org/licenses/by/4.0/"
+						rel="nofollow noopener"
+						target="_blank">CC BY 4.0</a
+					>. Bản dịch tiếng Việt giữ nguyên nội dung gốc.
+				</p>
+			</section>
+
+			<section class="container toc">
+				{
+					groups.map((g) => (
+						<div class="toc-part">
+							<div class="toc-label">
+								<h2>{g.label}</h2>
+								<p class="muted">{g.blurb}</p>
+								<p class="toc-count muted">{g.lessons.length} bài</p>
+							</div>
+							<ol class="toc-list">
+								{g.lessons.map((l) => (
+									<li class:list={[`d${Math.min(l.data.depth, 3)}`]}>
+										<a href={`/course/sdv101/${l.id}/`}>
+											<span class="t">{l.data.title}</span>
+											<span class="d muted">{l.data.description}</span>
+										</a>
+									</li>
+								))}
+							</ol>
+						</div>
+					))
+				}
+			</section>
+		</main>
+		<Footer />
+	</body>
+</html>
+
+<style>
+	.course-head {
+		padding: 3rem 1.25rem 0;
+		max-width: 52rem;
+	}
+	.course-head h1 {
+		margin: 0.3rem 0 0.8rem;
+	}
+	.lede {
+		font-size: 1.1rem;
+		margin: 0 0 1.4rem;
+	}
+	.cta {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.6rem;
+		margin-bottom: 1.4rem;
+	}
+	.license {
+		font-size: 0.86rem;
+		margin: 0;
+	}
+
+	.toc-part {
+		display: grid;
+		grid-template-columns: 16rem 1fr;
+		gap: 0 3rem;
+		padding-top: 2.5rem;
+		margin-top: 2.5rem;
+		border-top: 2px solid var(--border-strong);
+	}
+	.toc-label {
+		position: sticky;
+		top: 6rem;
+		align-self: start;
+	}
+	.toc-label h2 {
+		margin: 0 0 0.5rem;
+		font-size: 1.4rem;
+		line-height: 1.2;
+	}
+	.toc-label p {
+		font-size: 0.92rem;
+		margin: 0;
+	}
+	.toc-count {
+		margin-top: 0.5rem !important;
+		font-size: 0.82rem !important;
+	}
+	.toc-list {
+		margin: 0;
+		padding: 0;
+		list-style: none;
+	}
+	.toc-list li {
+		border-top: 1px solid var(--border);
+	}
+	.toc-list li:first-child {
+		border-top: none;
+	}
+	.toc-list a {
+		display: block;
+		padding: 0.75rem 0;
+		color: var(--heading);
+	}
+	.toc-list a:hover {
+		text-decoration: none;
+	}
+	.toc-list a:hover .t {
+		color: var(--accent);
+	}
+	.t {
+		display: block;
+		font-weight: 600;
+		font-size: 1rem;
+	}
+	.d {
+		display: block;
+		font-size: 0.9rem;
+		margin-top: 0.15rem;
+	}
+	li.d1 a {
+		padding-left: 1.25rem;
+	}
+	li.d2 a {
+		padding-left: 2.5rem;
+	}
+	li.d3 a {
+		padding-left: 3.75rem;
+	}
+
+	@media (max-width: 860px) {
+		.toc-part {
+			grid-template-columns: 1fr;
+			gap: 1.25rem;
+		}
+		.toc-label {
+			position: static;
+		}
+	}
+</style>

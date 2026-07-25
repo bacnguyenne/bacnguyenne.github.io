@@ -1,0 +1,180 @@
+---
+import { render } from 'astro:content';
+import BaseHead from '../../../components/BaseHead.astro';
+import CourseNav from '../../../components/CourseNav.astro';
+import Footer from '../../../components/Footer.astro';
+import Header from '../../../components/Header.astro';
+import { getLessons, PARTS } from '../../../lib/sdv101';
+
+export async function getStaticPaths() {
+	const lessons = await getLessons();
+	return lessons.map((lesson, i) => ({
+		params: { slug: lesson.id },
+		props: {
+			lesson,
+			lessons,
+			prev: lessons[i - 1],
+			next: lessons[i + 1],
+		},
+	}));
+}
+
+const { lesson, lessons, prev, next } = Astro.props;
+const { Content } = await render(lesson);
+const partLabel = PARTS.find((p) => p.key === lesson.data.part)?.label ?? '';
+---
+
+<!doctype html>
+<html lang="vi">
+	<head>
+		<BaseHead
+			title={`${lesson.data.title} — SDV101 tiếng Việt`}
+			description={lesson.data.description}
+		/>
+	</head>
+	<body>
+		<a href="#main" class="skip-link">Chuyển tới nội dung</a>
+		<Header />
+		<main id="main" class="container course-layout">
+			<aside class="sidebar">
+				<CourseNav lessons={lessons} current={lesson.id} />
+			</aside>
+
+			<article class="lesson">
+				<p class="eyebrow">{partLabel}</p>
+				<h1>{lesson.data.title}</h1>
+				<div class="prose">
+					<Content />
+				</div>
+
+				<div class="attrib">
+					<p>
+						Bài này là bản dịch tiếng Việt của <a
+							href={lesson.data.origUrl}
+							rel="nofollow noopener"
+							target="_blank">“{lesson.data.origTitle}”</a
+						> trong <a href="https://www.sdv.guide/" rel="nofollow noopener" target="_blank">SDV Guide</a
+						> — © 2024 Dirk Slama, phát hành theo giấy phép <a
+							href="https://creativecommons.org/licenses/by/4.0/"
+							rel="nofollow noopener"
+							target="_blank">CC BY 4.0</a
+						>. Nội dung được dịch nguyên văn, không thêm bớt.
+					</p>
+				</div>
+
+				<nav class="lesson-nav" aria-label="Điều hướng bài học">
+					{
+						prev ? (
+							<a class="ln" href={`/course/sdv101/${prev.id}/`}>
+								<span class="muted">← Bài trước</span>
+								<span class="ln-title">{prev.data.title}</span>
+							</a>
+						) : (
+							<span />
+						)
+					}
+					{
+						next ? (
+							<a class="ln next" href={`/course/sdv101/${next.id}/`}>
+								<span class="muted">Bài tiếp →</span>
+								<span class="ln-title">{next.data.title}</span>
+							</a>
+						) : (
+							<span />
+						)
+					}
+				</nav>
+			</article>
+		</main>
+		<Footer />
+	</body>
+</html>
+
+<style>
+	.course-layout {
+		display: grid;
+		grid-template-columns: 17rem minmax(0, 1fr);
+		gap: 0 3.5rem;
+		padding-top: 2.5rem;
+		align-items: start;
+	}
+	.sidebar {
+		position: sticky;
+		top: 5.5rem;
+		max-height: calc(100vh - 7rem);
+		overflow-y: auto;
+		padding-right: 0.5rem;
+	}
+	.lesson {
+		min-width: 0;
+		max-width: 44rem;
+	}
+	.lesson h1 {
+		margin: 0.2rem 0 1.5rem;
+	}
+	.attrib {
+		margin-top: 3rem;
+		padding: 0.9rem 1.1rem;
+		border: 1px solid var(--border);
+		border-radius: var(--radius-sm);
+		background: var(--bg-elev);
+		font-size: 0.86rem;
+		color: var(--text-muted);
+	}
+	.attrib p {
+		margin: 0;
+	}
+	.lesson-nav {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: 1rem;
+		margin-top: 2rem;
+	}
+	.ln {
+		display: flex;
+		flex-direction: column;
+		gap: 0.25rem;
+		padding: 0.9rem 1.1rem;
+		border: 1px solid var(--border);
+		border-radius: var(--radius-sm);
+		background: var(--surface);
+		transition: border-color 0.18s ease;
+	}
+	.ln:hover {
+		text-decoration: none;
+		border-color: var(--border-strong);
+	}
+	.ln.next {
+		text-align: right;
+	}
+	.ln .muted {
+		font-size: 0.8rem;
+	}
+	.ln-title {
+		color: var(--heading);
+		font-weight: 600;
+		font-size: 0.95rem;
+	}
+
+	@media (max-width: 960px) {
+		.course-layout {
+			grid-template-columns: 1fr;
+			gap: 2rem;
+		}
+		.sidebar {
+			position: static;
+			max-height: none;
+			overflow: visible;
+			padding-bottom: 1.5rem;
+			border-bottom: 1px solid var(--border);
+		}
+	}
+	@media (max-width: 560px) {
+		.lesson-nav {
+			grid-template-columns: 1fr;
+		}
+		.ln.next {
+			text-align: left;
+		}
+	}
+</style>

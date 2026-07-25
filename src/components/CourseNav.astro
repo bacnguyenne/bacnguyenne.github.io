@@ -1,0 +1,92 @@
+---
+import type { Lesson } from '../lib/sdv101';
+import { groupByPart } from '../lib/sdv101';
+
+interface Props {
+	lessons: Lesson[];
+	current?: string;
+}
+const { lessons, current } = Astro.props;
+const groups = groupByPart(lessons);
+---
+
+<nav class="course-nav" aria-label="Mục lục khoá học">
+	<a class="nav-home" href="/course/sdv101/">SDV101 — Mục lục</a>
+	{
+		groups.map((g) => (
+			<div class="nav-part">
+				<p class="nav-part-label">{g.label}</p>
+				<ul>
+					{g.lessons.map((l) => (
+						<li class:list={[`d${Math.min(l.data.depth, 3)}`, { active: l.id === current }]}>
+							<a href={`/course/sdv101/${l.id}/`} aria-current={l.id === current ? 'page' : undefined}>
+								{l.data.title}
+							</a>
+						</li>
+					))}
+				</ul>
+			</div>
+		))
+	}
+</nav>
+
+<style>
+	.course-nav {
+		font-size: 0.88rem;
+		line-height: 1.5;
+	}
+	.nav-home {
+		display: block;
+		font-weight: 600;
+		color: var(--heading);
+		margin-bottom: 1.2rem;
+		padding-bottom: 0.6rem;
+		border-bottom: 1px solid var(--border);
+	}
+	.nav-home:hover {
+		color: var(--accent);
+		text-decoration: none;
+	}
+	.nav-part + .nav-part {
+		margin-top: 1.25rem;
+	}
+	.nav-part-label {
+		margin: 0 0 0.4rem;
+		font-size: 0.74rem;
+		font-weight: 700;
+		letter-spacing: 0.06em;
+		text-transform: uppercase;
+		color: var(--text-muted);
+	}
+	ul {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		border-left: 1px solid var(--border);
+	}
+	li a {
+		display: block;
+		padding: 0.24rem 0.6rem;
+		color: var(--text-muted);
+		border-left: 2px solid transparent;
+		margin-left: -1px;
+	}
+	li a:hover {
+		color: var(--heading);
+		text-decoration: none;
+	}
+	li.active > a {
+		color: var(--accent);
+		font-weight: 600;
+		border-left-color: var(--accent);
+	}
+	li.d1 a {
+		padding-left: 1.3rem;
+	}
+	li.d2 a {
+		padding-left: 2rem;
+	}
+	li.d3 a {
+		padding-left: 2.7rem;
+	}
+</style>
