@@ -1,0 +1,90 @@
+# Sveltia CMS configuration.
+# Edits are committed straight to this repo, which triggers the normal Pages build.
+#
+# Auth: open /admin/ and use "Sign In with Token" with a GitHub personal access
+# token that has write access to this repo. Nothing secret lives in this file.
+
+backend:
+  name: github
+  repo: bacnguyenne/bacnguyenne.github.io
+  branch: main
+  commit_messages:
+    create: 'content: create {{collection}} "{{slug}}"'
+    update: 'content: update {{collection}} "{{slug}}"'
+    delete: 'content: delete {{collection}} "{{slug}}"'
+    uploadMedia: 'content: upload {{path}}'
+    deleteMedia: 'content: delete {{path}}'
+
+# Images uploaded through the CMS land here and are served from the site root.
+# Note: posts using Astro's optimised `heroImage` point at src/assets/ instead —
+# those are set by hand, not through the media library.
+media_folder: public/uploads
+public_folder: /uploads
+
+collections:
+  - name: blog
+    label: Blog posts
+    label_singular: Blog post
+    description: Everything under /blog/. Publishing happens on commit — the site rebuilds itself.
+    folder: src/content/blog
+    extension: md
+    format: yaml-frontmatter
+    create: true
+    delete: true
+    slug: '{{slug}}'
+    preview_path: 'blog/{{slug}}'
+    summary: '{{title}}'
+    sortable_fields: [pubDate, title]
+    fields:
+      - label: Title
+        name: title
+        widget: string
+        hint: Shown as the page heading and in the post list.
+
+      - label: Description
+        name: description
+        widget: text
+        hint: One sentence, used on the blog index and in search results. Keep it under ~155 characters.
+
+      - label: Published
+        name: pubDate
+        widget: datetime
+        date_format: MMM D YYYY
+        time_format: false
+        format: MMM D YYYY
+        hint: Do not set a date in the future — the post would sort ahead of everything and look mis-dated.
+
+      - label: Updated
+        name: updatedDate
+        widget: datetime
+        date_format: MMM D YYYY
+        time_format: false
+        format: MMM D YYYY
+        required: false
+
+      - label: Hero image
+        name: heroImage
+        widget: string
+        required: false
+        hint: 'Optional. Path relative to the post, e.g. ../../assets/my-image.png — the file must already exist in src/assets/.'
+
+      - label: Tags
+        name: tags
+        widget: list
+        required: false
+        default: []
+        hint: >-
+          The first matching tag decides the section on the blog index:
+          sdv, coding-agents, engineering-practice, soft-skills, research.
+          Anything else lands under AI & LLM Engineering.
+
+      - label: Draft
+        name: draft
+        widget: boolean
+        required: false
+        default: false
+        hint: Drafts stay off the site until this is switched off.
+
+      - label: Body
+        name: body
+        widget: markdown
